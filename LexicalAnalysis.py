@@ -14,6 +14,24 @@ tokens = {}
 # except for = and ==
 symbols = [';', ':', ',', '[', ']', '(', ')', '{', '}', '+', '-', '*', '<', '>', '\'']
 keywords = ['if', 'else', 'void', 'int', 'while', 'break', 'continue', 'switch', 'default', 'case', 'return', 'float']
+spaces = [' ', '\n', '\t']
+
+
+def report():
+    global tokens, errors
+    with open('lexical_errors.txt', 'w+') as errors_file:
+        for i in errors.keys():
+            errors_file.write('{}. '.format(i))
+            for v in errors[i]:
+                errors_file.write('{}'.format(v))
+            errors_file.write('\n')
+
+    with open('scanner.txt', 'w+') as tokens_file:
+        for i in tokens.keys():
+            tokens_file.write('{}. '.format(i))
+            for v in tokens[i]:
+                tokens_file.write('{}'.format(v))
+            tokens_file.write('\n')
 
 
 def omit_start(token_type, token_len):
@@ -53,12 +71,14 @@ def get_next_token():
     if unread_parts[0] in symbols:
         return omit_start('SYMBOL', 1)
     if unread_parts[0].isalpha():
-        # TODO - needs edit for capturing errors like first example of doc.
         length = len(unread_parts)
         for i in range(len(unread_parts)):
             if not unread_parts[i].isalnum():
-                length = i
-                break
+                if unread_parts[i] in symbols + spaces:
+                    length = i
+                    break
+                else:
+                    return omit_start('ERROR', i + 1)
         if unread_parts[:length] in keywords:
             return omit_start('KEYWORD', length)
         else:
@@ -66,7 +86,12 @@ def get_next_token():
     if unread_parts[0].isnumeric():
         for i in range(len(unread_parts)):
             if not unread_parts[i].isnumeric():
-                return omit_start('NUM', i)
+                if unread_parts[i] in symbols + spaces:
+                    return omit_start('NUM', i)
+                else:
+                    return omit_start('ERROR', i + 1)
+    if unread_parts[0] in spaces:
+        return omit_start('WHITESPACE', 1)
     return omit_start('ERROR', 1)
 
 
@@ -86,13 +111,6 @@ while True:
             tokens[line_num] += ' (' + token[0] + ', ' + token[1] + ')'
         else:
             tokens[line_num] = '(' + token[0] + ', ' + token[1] + ')'
-print('tokens:\n')
-for i in tokens.values():
-    print(i)
-print('errors:\n')
-for i in errors.values():
-    print(i)
-# lines = file.split("\n")
-# for line in lines:
-#     words = line.split()
-#     print(words)
+
+
+report()
