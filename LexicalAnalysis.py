@@ -86,7 +86,7 @@ def get_next_token():
     if unread_parts[0].isnumeric():
         for i in range(len(unread_parts)):
             if not unread_parts[i].isnumeric():
-                if unread_parts[i] in symbols + spaces:
+                if unread_parts[i] in symbols + spaces or unread_parts[i].isalpha():
                     return omit_start('NUM', i)
                 else:
                     return omit_start('ERROR', i + 1)
