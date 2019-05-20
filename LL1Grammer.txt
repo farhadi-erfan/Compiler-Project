@@ -1,0 +1,129 @@
+Program -> DeclarationList eof .
+
+DeclarationList -> DeclarationList_1 .
+
+DeclarationList_1 -> Declaration DeclarationList_1 
+                    |.
+
+Declaration -> TypeSpecifier FTypeSpecifier_2 .
+
+FTypeSpecifier_2 -> FTypeSpecifier 
+                   |ID ( Params ) CompoundStmt .
+
+VarDeclaration -> TypeSpecifier FTypeSpecifier .
+
+FTypeSpecifier -> ID FID_1 .
+
+FID_1 -> ; 
+        |bropen NUM brclose ; .
+
+TypeSpecifier -> int 
+                |void .
+
+FunDeclaration -> TypeSpecifier ID ( Params ) CompoundStmt .
+
+Params -> void Fvoid 
+         |int FTypeSpecifier_1 ParamList_1 .
+
+Fvoid -> FTypeSpecifier_1 ParamList_1 
+        |.
+
+ParamList -> Param ParamList_1 .
+
+ParamList_1 -> comma Param ParamList_1 
+              |.
+
+Param -> TypeSpecifier FTypeSpecifier_1 .
+
+FTypeSpecifier_1 -> ID FID_2 .
+
+FID_2 -> 
+        |bropen brclose .
+
+CompoundStmt -> cropen DeclarationList StatementList crclose .
+
+StatementList -> StatementList_1 .
+
+StatementList_1 -> Statement StatementList_1 
+                  |.
+
+Statement -> ExpressionStmt 
+            |CompoundStmt 
+            |SelectionStmt 
+            |IterationStmt 
+            |ReturnStmt 
+            |SwitchStmt .
+
+ExpressionStmt -> Expression ; 
+                 |continue ; 
+                 |break ; 
+                 |; .
+
+SelectionStmt -> if ( Expression ) Statement else Statement .
+
+IterationStmt -> while ( Expression ) Statement .
+
+ReturnStmt -> return Freturn .
+
+Freturn -> ; 
+          |Expression ; .
+
+SwitchStmt -> switch ( Expression ) cropen CaseStmts DefaultStmt crclose .
+
+CaseStmts -> CaseStmts_1 .
+
+CaseStmts_1 -> CaseStmt CaseStmts_1 
+              |.
+
+CaseStmt -> case NUM : StatementList .
+
+DefaultStmt -> default : StatementList 
+              |.
+
+Expression -> Var eq Expression 
+             |SimpleExpression .
+
+Var -> ID FID .
+
+FID -> 
+      |bropen Expression brclose .
+
+SimpleExpression -> AdditiveExpression FAdditiveExpression .
+
+FAdditiveExpression -> Relop AdditiveExpression 
+                      |.
+
+Relop -> less 
+        |deq .
+
+AdditiveExpression -> Term AdditiveExpression_1 .
+
+AdditiveExpression_1 -> Addop Term AdditiveExpression_1 
+                       |.
+
+Addop -> + 
+        |minus .
+
+Term -> SignedFactor Term_1 .
+
+Term_1 -> * SignedFactor Term_1 
+         |.
+
+SignedFactor -> Factor 
+               |+ Factor 
+               |minus Factor .
+
+Factor -> ( Expression ) 
+         |Var 
+         |Call 
+         |NUM .
+
+Call -> ID ( Args ) .
+
+Args -> ArgList 
+       |.
+
+ArgList -> Expression ArgList_1 .
+
+ArgList_1 -> comma Expression ArgList_1 
+            |.
