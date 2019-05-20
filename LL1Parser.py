@@ -1,4 +1,12 @@
-from LexicalAnalysis import get_next_token
+# from LexicalAnalysis import get_next_token
+
+i = -1
+
+
+def get_next_token():
+    global i
+    i += 1
+    return 'int id ; EOF'.split()[i]
 
 
 class FSM:
@@ -27,14 +35,14 @@ class FSM:
                 condition = transition.get('condition', None)
                 if condition and transition['condition'] == achar:
                     terminal(achar)
-                    if transition['finish']:
+                    if transition['Finish']:
                         return True, 'Finish'
                     else:
                         self.update_state(transition['dst'])
                         return True, 'Cont'
                 if not condition:
                     return False, (transition['callback'], transition['dst'])
-        return False
+        return False, None
 
     def update_state(self, new_state):
         print("{} -> {} : {}".format(self.current_char,
@@ -57,12 +65,19 @@ class Node:
             self.name = sub_diagram.fsm_map[0]['name']
 
     def __repr__(self):
-        return 'name: ' + self.sub_diagram + ' level: ' + self.level + ' parent_next_state: '\
+        return 'name: ' + self.name + ' level: ' + self.level + ' parent_next_state: '\
                + self.parent_next_state + ' type: ' + self.type
 
 
 def terminal(term):
     curr.children += [Node(curr, term, None, 'Term')]
+
+def is_it_the_end():
+    l = []
+    for x in curr.sub_diagram.fsm_map:
+        if 'Finish' in x.keys():
+            l += [x['dst']]
+    return curr.sub_diagram.current_state in l
 
 
 def non_terminal_end():
@@ -71,6 +86,8 @@ def non_terminal_end():
         next = curr.parent_next_state
         curr = curr.parent
         curr.sub_diagram.current_state = next
+        if is_it_the_end():
+            return non_terminal_end()
         return curr.sub_diagram.run()
     else:
         print_nodes(head)
@@ -79,7 +96,7 @@ def non_terminal_end():
 
 def non_terminal_init(non_terminal_name, next_state, token):
     global curr
-    curr.children += [Node(curr, globals()[non_terminal_name + '_sub_diagram'], next_state, 'NonTerm')]
+    curr.children += [Node(curr, FSM(globals()[non_terminal_name]), next_state, 'NonTerm')]
     curr = curr.children[-1]
     return curr.sub_diagram.run(token)
 
@@ -313,12 +330,38 @@ Num = ({'src': 0, 'dst': 1, 'condition': 'num', 'callback': None, 'name': 'NUM',
 
 PROGRAM_sub_diagram = FSM(PROGRAM)
 DL_sub_diagram = FSM(DL)
-head = Node(None, PROGRAM_sub_diagram, None, 'NonTerm')
-curr = head
-result = curr.sub_diagram.run()
-while True:
-    while result is True:
-        result = non_terminal_end()
-        if result == 'END':
-            exit()
-    result = non_terminal_init(result[0], result[1], result[2])
+DL1_sub_diagram = FSM(DL1)
+Dec_sub_diagram = FSM(Dec)
+FTS2_sub_diagram = FSM(FTS2)
+VarDec_sub_diagram = FSM(VarDec)
+FTS_sub_diagram = FSM(FTS)
+FID1_sub_diagram = FSM(FID1)
+TS_sub_diagram = FSM(TS)
+FDec_sub_diagram = FSM(FDec)
+Params_sub_diagram = FSM(Params)
+FVoid_sub_diagram = FSM(FVoid)
+PL_sub_diagram = FSM(PL)
+PL1_sub_diagram = FSM(PL1)
+Param_sub_diagram = FSM(Param)
+FTS1_sub_diagram = FSM(FTS1)
+FID2_sub_diagram = FSM(FID2)
+CompStmt_sub_diagram = FSM(CompStmt)
+SL_sub_diagram = FSM(SL)
+SL1_sub_diagram = FSM(SL1)
+Stmt_sub_diagram = FSM(Stmt)
+ExpStmt_sub_diagram = FSM(ExpStmt)
+SelStmt_sub_diagram = FSM(SelStmt)
+IterStmt_sub_diagram = FSM(IterStmt)
+ID_sub_diagram = FSM(ID)
+try:
+    head = Node(None, PROGRAM_sub_diagram, None, 'NonTerm')
+    curr = head
+    result = curr.sub_diagram.run()
+    while True:
+        while result is True:
+            result = non_terminal_end()
+            if result == 'END':
+                exit()
+        result = non_terminal_init(result[0], result[1], result[2])
+except:
+    print_nodes(head)
