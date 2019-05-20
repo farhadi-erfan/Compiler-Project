@@ -160,12 +160,23 @@ Stmt = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'ExpStmt', 'finish':
         {'src': 0, 'dst': 1, 'condition': None, 'callback': 'SwitchStmt', 'finish': True})
 ExpStmt = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Exp', 'name': 'ExpStmt'},
            {'src': 1, 'dst': 2, 'condition': ';', 'callback': None, 'finish': True},
-           {'src': 0, 'dst': 3, 'condition': 'continue', 'callback': 'SL'},
+           {'src': 0, 'dst': 3, 'condition': 'continue', 'callback': None},
            {'src': 3, 'dst': 2, 'condition': ';', 'callback': None, 'finish': True},
            {'src': 0, 'dst': 4, 'condition': 'break', 'callback': 'SL'},
            {'src': 4, 'dst': 2, 'condition': ';', 'callback': None, 'finish': True},
            {'src': 0, 'dst': 2, 'condition': ';', 'callback': None, 'finish': True})
-
+SelStmt = ({'src': 0, 'dst': 1, 'condition': 'if', 'callback': None, 'name': 'SelStmt'},
+           {'src': 1, 'dst': 2, 'condition': '(', 'callback': None},
+           {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Exp'},
+           {'src': 3, 'dst': 4, 'condition': ')', 'callback': None},
+           {'src': 4, 'dst': 5, 'condition': None, 'callback': 'Stmt'},
+           {'src': 5, 'dst': 6, 'condition': 'else', 'callback': None},
+           {'src': 6, 'dst': 7, 'condition': None, 'callback': 'Stmt', 'finish': True})
+IterStmt = ({'src': 0, 'dst': 1, 'condition': 'while', 'callback': None, 'name': 'IterStmt'},
+            {'src': 1, 'dst': 2, 'condition': '(', 'callback': None},
+            {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Expr'},
+            {'src': 3, 'dst': 4, 'condition': ')', 'callback': None},
+            {'src': 4, 'dst': 5, 'condition': None, 'callback': 'Stmt', 'finish': True1})
 
 PROGRAM_sub_diagram = FSM(PROGRAM)
 DL_sub_diagram = FSM(DL)
