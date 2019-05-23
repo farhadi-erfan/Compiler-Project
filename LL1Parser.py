@@ -43,7 +43,7 @@ class FSM:
                 condition = transition.get('condition', None)
                 if condition and transition['condition'] == token:
                     #terminal
-                    self.in_error_handling = True
+                    self.in_error_handling = False
                     terminal(token)
                     if transition['Finish']:
                         return True, 'Finish'
@@ -52,16 +52,16 @@ class FSM:
                         return True, 'Cont'
                 if not condition:
                     #non terminal
-                    self.in_error_handling = True
                     non_terminal_name = transition['callback']
                     if token in firsts[non_terminal_name] or (
                             'eps' in firsts[non_terminal_name] and token in follows[non_terminal_name]):
+                        self.in_error_handling = False
                         return False, (transition['callback'], transition['dst'])
                 if condition and condition == '':
                     #eps
-                    self.in_error_handling = True
                     if token in follows[self.fsm_map[0]['name']]:
                         self.update_state(transition['dst'])
+                        self.in_error_handling = False
                         return True, 'Finish'
         # error handling
         self.in_error_handling = True
@@ -205,4 +205,4 @@ try:
         result = non_terminal_init(non_terminal_name, next_state, token)
 except Exception as e:
     print_nodes(head)
-    print(traceback.print_exc())
+    print(e)
