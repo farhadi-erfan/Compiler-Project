@@ -4,10 +4,14 @@ firsts = {
     'DL1': ['int', 'void'],
     'Dec': ['int', 'void'],
     'FTS2': ['eps'],
+    'VarDec': ['int', 'void'],
     'FTS': ['eps'],
     'FID1': [';', '['],
+    'TS': ['int', 'void'],
+    'FDec': ['int', 'void'],
     'Params': ['void', 'int'],
     'FVoid': ['eps'],
+    'PL': ['int', 'void'],
     'PL1': [','],
     'Param': ['int', 'void'],
     'FTS1': ['eps'],
@@ -53,10 +57,14 @@ follows = {
     'DL': ['eof', 'continue', 'break', ';', '{', 'if', 'while', 'return', 'switch', '+', '-', '(', '}'],
     'Dec': ['int', 'void', 'eof', 'continue', 'break', ';', '{', 'if', 'while', 'return', 'switch', '+', '-', '(', '}'],
     'FTS2': ['int', 'void', 'eof', 'continue', 'break', ';', '{', 'if', 'while', 'return', 'switch', '+', '-', '(', '}'],
+    'VarDec': ['eps'],
     'FTS': ['int', 'void', 'eof', 'continue', 'break', ';', '{', 'if', 'while', 'return', 'switch', '+', '-', '(', '}'],
     'FID1': ['int', 'void', 'eof', 'continue', 'break', ';', '{', 'if', 'while', 'return', 'switch', '+', '-', '(', '}'],
+    'TS': ['eps'],
+    'FDec': ['eps'],
     'Params': [')'],
     'FVoid': [')'],
+    'PL': ['eps'],
     'PL1': [')'],
     'Param': [')', ','],
     'FTS1': [')', ','],
@@ -103,7 +111,6 @@ follows = {
     'ID': ['*', '+', '-', '<', '==', '=', ';', ']', ')', ',', ';', '[', '('],
     'Num': ['*', '+', '-', '<', '==', ';', ']', ')', ',']
 }
-
 
 nullables = ['DL1', 'FVoid', 'PL1', 'FID2', 'DL', 'SL1', 'CaseStmts', 'CaseStmts_1', 'DefaultStmt',
              'SL', 'FID', 'FAdditiveExpr', 'AdditiveExpr_1', 'Term_1', 'Args', 'ArgList_1']
