@@ -63,7 +63,7 @@ follows = {
     'FID2': [')', ','],
     'CompStmt': ['case', 'default', 'else','int', 'void', 'eof', 'continue', 'break', ';', '{',
                  'if', 'while', 'return', 'switch', '+', '-', '(', '}'],
-    'SL': ['case', 'default', '}']
+    'SL': ['case', 'default', '}'],
     'SL1': ['case', 'default', '}'],
     'Stmt': ['case', 'default', 'else','int', 'void', 'eof', 'continue', 'break', ';', '{',
                 'if', 'while', 'return', 'switch', '+', '-', '(', '}'],
