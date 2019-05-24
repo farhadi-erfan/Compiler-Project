@@ -32,6 +32,8 @@ class FSM:
                 return nxt[0], nxt[1], token
             elif nxt == 'Finish':
                 return True
+            elif nxt[0] == 'Finish':
+                return True, nxt[1]
             else:
                 token = None
 
@@ -55,7 +57,7 @@ class FSM:
                     if token in follows[self.fsm_map[0]['name']]:
                         self.update_state(transition['dst'])
                         self.in_error_handling = False
-                        return True, 'Finish'
+                        return True, ('Finish', token)
                 if not condition:
                     #non terminal
                     non_terminal_name = transition['callback']
@@ -138,15 +140,15 @@ def is_it_the_end():
     return curr.sub_diagram.current_state in l
 
 
-def non_terminal_end():
+def non_terminal_end(token=None):
     global curr
     if curr.parent is not None:
         next = curr.parent_next_state
         curr = curr.parent
-        curr.sub_diagram.current_state = next
+        curr.sub_diagram.update_state(next)
         if is_it_the_end():
-            return non_terminal_end()
-        return curr.sub_diagram.run()
+            return non_terminal_end(token)
+        return curr.sub_diagram.run(token)
     else:
         print_nodes(head)
         return 'END'
@@ -196,8 +198,11 @@ try:
     curr = head
     result = curr.sub_diagram.run()
     while True:
-        while result is True:
-            result = non_terminal_end()
+        while result is True or result[0] is True:
+            if type(result) is tuple:
+                result = non_terminal_end(result[1])
+            else:
+                result = non_terminal_end()
             if result == 'END':
                 exit()
         non_terminal_name, next_state, token = result[0], result[1], result[2]
