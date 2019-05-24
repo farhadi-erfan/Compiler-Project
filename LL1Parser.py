@@ -50,25 +50,29 @@ class FSM:
                     else:
                         self.update_state(transition['dst'])
                         return True, 'Cont'
-                if not condition:
-                    #non terminal
-                    non_terminal_name = transition['callback']
-                    if token in firsts[non_terminal_name] or (
-                            'eps' in firsts[non_terminal_name] and token in follows[non_terminal_name]):
-                        self.in_error_handling = False
-                        return False, (transition['callback'], transition['dst'])
-                if condition and condition == '':
+                if condition == '':
                     #eps
                     if token in follows[self.fsm_map[0]['name']]:
                         self.update_state(transition['dst'])
                         self.in_error_handling = False
                         return True, 'Finish'
+                if not condition:
+                    #non terminal
+                    non_terminal_name = transition['callback']
+                    if token in firsts[non_terminal_name] or (
+                            non_terminal_name in nullables and token in follows[non_terminal_name]):
+                        self.in_error_handling = False
+                        return False, (transition['callback'], transition['dst'])
         # error handling
         self.in_error_handling = True
         outs = self.state_transition(frozen_state)
         if len(outs) == 1:
             out = outs[0]
             condition = out.get('condition', None)
+            if condition is not None and condition == 'EOF':
+                # eof
+                print('#{} : Syntax Error! Malformed Input'.format(line_num))
+                return 'END'
             if condition is not None and condition != token and condition != '':
                 # terminal
                 print('#{} : Syntax Error! Missing {}'.format(line_num, token))
@@ -87,12 +91,6 @@ class FSM:
                         print('#{} : Syntax Error! Missing {}'.format(line_num, non_terminal_name))
                         self.update_state(out['dst'])
                         return True, 'Cont'
-            if condition is not None and condition == 'EOF':
-                # eof
-                print('#{} : Syntax Error! Malformed Input'.format(line_num))
-                return 'END'
-
-
         return False, None
 
     def update_state(self, new_state):
@@ -134,8 +132,9 @@ def terminal(term):
 def is_it_the_end():
     l = []
     for x in curr.sub_diagram.fsm_map:
-        if 'Finish' in x.keys():
-            l += [x['dst']]
+        if x:
+            if 'Finish' in x.keys():
+                l += [x['dst']]
     return curr.sub_diagram.current_state in l
 
 
