@@ -11,17 +11,16 @@ DL1 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Dec', 'name': 'DL1'}
 Dec = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'TS', 'name': 'Dec'},
        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FTS2', 'Finish': True})
 
-FTS2 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'FTS', 'Finish': True, 'name': 'FTS2'},
-        {'src': 0, 'dst': 2, 'condition': None, 'callback': 'ID'},
-        {'src': 2, 'dst': 3, 'condition': '(', 'callback': None},
-        {'src': 3, 'dst': 4, 'condition': None, 'callback': 'Params'},
-        {'src': 4, 'dst': 5, 'condition': ')', 'callback': None},
-        {'src': 5, 'dst': 6, 'condition': None, 'callback': 'CompStmt', 'Finish': True})
+FTS2 = ({'src': 0, 'dst': 1, 'condition': 'id', 'callback': None, 'name': 'FTS2'},
+        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Fid', 'finish': True})
 
-VarDec = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'TS', 'name': 'VarDec'},
-          {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FTS', 'Finish': True})
+Fid = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'FID1', 'finish': True, 'name': 'Fid'},
+        {'src': 0, 'dst': 2, 'condition': '(', 'callback': None},
+        {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Params'},
+        {'src': 3, 'dst': 4, 'condition': ')', 'callback': None},
+        {'src': 4, 'dst': 2, 'condition': None, 'callback': 'CompStmt', 'finish': True})
 
-FTS = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'ID', 'name': 'FTS'},
+FTS = ({'src': 0, 'dst': 1, 'condition': 'id', 'callback': None, 'name': 'FTS'},
        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FID1', 'Finish': True})
 
 FID1 = ({'src': 0, 'dst': 1, 'condition': ';', 'callback': None, 'Finish': True, 'name': 'FID1'},
@@ -34,7 +33,7 @@ TS = ({'src': 0, 'dst': 1, 'condition': 'int', 'callback': None, 'name': 'TS', '
       {'src': 0, 'dst': 2, 'condition': 'void', 'callback': None, 'Finish': True})
 
 FDec = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'TS', 'name': 'FDec'},
-        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'ID'},
+        {'src': 1, 'dst': 2, 'condition': id, 'callback': None},
         {'src': 2, 'dst': 3, 'condition': '(', 'callback': None},
         {'src': 3, 'dst': 4, 'condition': None, 'callback': 'Params'},
         {'src': 4, 'dst': 5, 'condition': ')', 'callback': None},
@@ -61,7 +60,7 @@ PL1 = ({'src': 0, 'dst': 1, 'condition': ',', 'callback': None, 'name': 'PL1'},
 Param = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'TS', 'name': 'Param'},
          {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FTS1', 'Finish': True})
 
-FTS1 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'ID', 'name': 'FTS1'},
+FTS1 = ({'src': 0, 'dst': 1, 'condition': id, 'callback': None, 'name': 'FTS1'},
         {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FID2', 'Finish': True})
 
 FID2 = ({'src': 0, 'dst': 2, 'condition': '', 'callback': None, 'name': 'FID2', 'Finish': True},
@@ -86,7 +85,7 @@ Stmt = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'ExpStmt', 'Finish':
         {'src': 0, 'dst': 1, 'condition': None, 'callback': 'RetStmt', 'Finish': True},
         {'src': 0, 'dst': 1, 'condition': None, 'callback': 'SwitchStmt', 'Finish': True})
 
-ExpStmt = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Exp', 'name': 'ExpStmt'},
+ExpStmt = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Expr', 'name': 'ExpStmt'},
            {'src': 1, 'dst': 2, 'condition': ';', 'callback': None, 'Finish': True},
            {'src': 0, 'dst': 3, 'condition': 'continue', 'callback': None},
            {'src': 3, 'dst': 2, 'condition': ';', 'callback': None, 'Finish': True},
@@ -96,7 +95,7 @@ ExpStmt = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Exp', 'name': 'E
 
 SelStmt = ({'src': 0, 'dst': 1, 'condition': 'if', 'callback': None, 'name': 'SelStmt'},
            {'src': 1, 'dst': 2, 'condition': '(', 'callback': None},
-           {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Exp'},
+           {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Expr'},
            {'src': 3, 'dst': 4, 'condition': ')', 'callback': None},
            {'src': 4, 'dst': 5, 'condition': None, 'callback': 'Stmt'},
            {'src': 5, 'dst': 6, 'condition': 'else', 'callback': None},
@@ -125,7 +124,7 @@ SwitchStmt = ({'src': 0, 'dst': 1, 'condition': 'switch', 'callback': None, 'nam
               {'src': 7, 'dst': 8, 'condition': '}', 'callback': None, 'Finish': True})
 
 CaseStmts = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'CaseStmts_1', 'name': 'CaseStmts',
-              'Finish': True})
+              'Finish': True}, None)
 
 CaseStmts_1 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'CaseStmt', 'name': 'CaseStmts_1'},
                {'src': 1, 'dst': 2, 'condition': None, 'callback': 'CaseStmts_1', 'Finish': True},
@@ -141,21 +140,14 @@ DefaultStmt = ({'src': 0, 'dst': 1, 'condition': 'default', 'callback': None, 'n
                {'src': 2, 'dst': 3, 'condition': None, 'callback': 'StatementList', 'Finish': True},
                {'src': 0, 'dst': 3, 'condition': '', 'callback': None, 'Finish': True})
 
-Expr = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Var', 'name': 'Expr'},
-        {'src': 1, 'dst': 2, 'condition': 'eq', 'callback': None},
-        {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Expr', 'Finish': True},
+Expr = ({'src': 0, 'dst': 1, 'condition': 'id', 'callback': None, 'name': 'Expr'},
+        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Assign_1', 'Finish': True},
+        {'src': 0, 'dst': 2, 'condition': None, 'callback': 'Assign_2', 'Finish': True},
         {'src': 0, 'dst': 3, 'condition': None, 'callback': 'SimpleExpr', 'Finish': True})
-
-Var = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'ID', 'name': 'Var'},
-       {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FID', 'Finish': True})
 
 FID = ({'src': 0, 'dst': 1, 'condition': '[', 'callback': None, 'name': 'FID'},
        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Expr'},
        {'src': 2, 'dst': 3, 'condition': ']', 'callback': None, 'Finish': True})
-
-SimpleExpr = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'AdditiveExpr',
-                     'name': 'SimpleExpr'},
-                    {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FAdditiveExpr', 'Finish': True})
 
 FAdditiveExpr = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Relop', 'name': 'FAdditiveExpr'},
                        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'AdditiveExpr', 'Finish': True},
@@ -192,14 +184,9 @@ SignedFactor = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Factor', 'F
 Factor = ({'src': 0, 'dst': 1, 'condition': '(', 'callback': None, 'name': 'Factor'},
           {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Expr'},
           {'src': 2, 'dst': 3, 'condition': ')', 'callback': None, 'Finish': True},
-          {'src': 0, 'dst': 3, 'condition': None, 'callback': 'Var', 'Finish': True},
-          {'src': 0, 'dst': 3, 'condition': None, 'callback': 'Call', 'Finish': True},
-          {'src': 0, 'dst': 3, 'condition': None, 'callback': 'Num', 'Finish': True})
-
-Call = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'ID', 'name': 'Call'},
-        {'src': 1, 'dst': 2, 'condition': '(', 'callback': None},
-        {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Args'},
-        {'src': 3, 'dst': 4, 'condition': ')', 'callback': None, 'Finish': True})
+          {'src': 0, 'dst': 4, 'condition': 'id', 'callback': None},
+          {'src': 4, 'dst': 3, 'condition': None, 'callback': 'FID1', 'Finish': True},
+          {'src': 0, 'dst': 3, 'condition': 'num', 'callback': None, 'Finish': True})
 
 Args = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'ArgList', 'name': 'Args', 'Finish': True},
         {'src': 0, 'dst': 1, 'condition': '', 'callback': None, 'Finish': True})
@@ -212,7 +199,33 @@ ArgList_1 = ({'src': 0, 'dst': 1, 'condition': ',', 'callback': None, 'name': 'A
              {'src': 2, 'dst': 3, 'condition': None, 'callback': 'ArgList_1', 'Finish': True},
              {'src': 2, 'dst': 3, 'condition': '', 'callback': None, 'Finish': True})
 
+Assign_2 = ({'src': 0, 'dst': 1, 'condition': '(', 'callback': None, 'name': 'Assign_2'},
+            {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Expr'},
+            {'src': 2, 'dst': 3, 'condition': ')', 'callback': None},
+            {'src': 3, 'dst': 4, 'condition': ')', 'callback': 'Assign_3', 'Finish': True},
+            {'src': 0, 'dst': 5, 'condition': 'num', 'callback': None},
+            {'src': 5, 'dst': 4, 'condition': None, 'callback': 'Assign_3', 'Finish': True},
+            {'src': 0, 'dst': 6, 'condition': '-', 'callback': None},
+            {'src': 6, 'dst': 7, 'condition': None, 'callback': 'Factor'},
+            {'src': 7, 'dst': 4, 'condition': None, 'callback': 'Assign_3', 'Finish': True},
+            {'src': 0, 'dst': 8, 'condition': '+', 'callback': None},
+            {'src': 8, 'dst': 9, 'condition': None, 'callback': 'Factor'},
+            {'src': 9, 'dst': 4, 'condition': None, 'callback': 'Assign_3', 'Finish': True})
 
-ID = ({'src': 0, 'dst': 1, 'condition': 'id', 'callback': None, 'name': 'ID', 'Finish': True}, None)
+Assign_3 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Term_1', 'name': 'Assign_2'},
+            {'src': 1, 'dst': 2, 'condition': None, 'callback': 'AdditiveExpr_1'},
+            {'src': 2, 'dst': 3, 'condition': None, 'callback': 'FAdditiveExpr', 'Finish': True})
 
-Num = ({'src': 0, 'dst': 1, 'condition': 'num', 'callback': None, 'name': 'NUM', 'Finish': True}, None)
+Assign_1 = ({'src': 0, 'dst': 1, 'condition': '=', 'callback': None, 'name': 'Assign_1'},
+            {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FID'},
+            {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Expr', 'Finish': True},
+            {'src': 0, 'dst': 4, 'condition': None, 'callback': 'FID'},
+            {'src': 4, 'dst': 5, 'condition': None, 'callback': 'Term_1'},
+            {'src': 5, 'dst': 6, 'condition': None, 'callback': 'AdditiveExpr_1'},
+            {'src': 6, 'dst': 3, 'condition': None, 'callback': 'FAdditiveExpr', 'Finish': True},
+            {'src': 0, 'dst': 7, 'condition': '(', 'callback': None},
+            {'src': 7, 'dst': 8, 'condition': None, 'callback': 'Args'},
+            {'src': 8, 'dst': 9, 'condition': ')', 'callback': None},
+            {'src': 9, 'dst': 10, 'condition': None, 'callback': 'Term_1'},
+            {'src': 10, 'dst': 11, 'condition': None, 'callback': 'AdditiveExpr_1'},
+            {'src': 11, 'dst': 3, 'condition': None, 'callback': 'FAdditiveExpr', 'Finish': True})
