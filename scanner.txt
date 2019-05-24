@@ -1,0 +1,1 @@
+1. (KEYWORD, int) (ID, id) (SYMBOL, ;) (EOF, EOF)

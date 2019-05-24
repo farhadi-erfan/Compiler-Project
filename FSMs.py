@@ -12,13 +12,13 @@ Dec = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'TS', 'name': 'Dec'},
        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FTS2', 'Finish': True})
 
 FTS2 = ({'src': 0, 'dst': 1, 'condition': 'id', 'callback': None, 'name': 'FTS2'},
-        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Fid', 'finish': True})
+        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Fid', 'Finish': True})
 
-Fid = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'FID1', 'finish': True, 'name': 'Fid'},
+Fid = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'FID1', 'Finish': True, 'name': 'Fid'},
         {'src': 0, 'dst': 2, 'condition': '(', 'callback': None},
         {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Params'},
         {'src': 3, 'dst': 4, 'condition': ')', 'callback': None},
-        {'src': 4, 'dst': 2, 'condition': None, 'callback': 'CompStmt', 'finish': True})
+        {'src': 4, 'dst': 2, 'condition': None, 'callback': 'CompStmt', 'Finish': True})
 
 FTS = ({'src': 0, 'dst': 1, 'condition': 'id', 'callback': None, 'name': 'FTS'},
        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FID1', 'Finish': True})

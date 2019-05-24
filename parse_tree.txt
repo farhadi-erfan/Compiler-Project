@@ -1,0 +1,13 @@
+Program
+|	DL
+|	|	DL1
+|	|	|	Dec
+|	|	|	|	TS
+|	|	|	|	|	int
+|	|	|	|	FTS2
+|	|	|	|	|	id
+|	|	|	|	|	Fid
+|	|	|	|	|	|	FID1
+|	|	|	|	|	|	|	;
+|	|	|	DL1
+|	EOF
