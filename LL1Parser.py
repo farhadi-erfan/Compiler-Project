@@ -1,4 +1,3 @@
-import traceback
 from FSMs import *
 from first_follows import *
 
@@ -55,8 +54,9 @@ class FSM:
                     if token[0] in follows[self.fsm_map[0]['name']]:
                         self.update_state(transition['dst'])
                         self.in_error_handling = False
+                        eps()
                         return True, ('Finish', token)
-                if not condition:
+                if condition is None:
                     #non terminal
                     non_terminal_name = transition['callback']
                     if token[0] in firsts[non_terminal_name] or (
@@ -131,6 +131,9 @@ def terminal(term):
     else:
         curr.children += [Node(curr, term[0], None, 'Term')]
 
+
+def eps():
+    curr.children += [Node(curr, '', None, 'Term')]
 
 def is_it_the_end():
     l = []

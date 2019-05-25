@@ -1,3 +1,4 @@
+import traceback
 import LL1Parser
 from LL1Parser import *
 from LexicalAnalysis import *
@@ -63,19 +64,24 @@ curr = head
 LL1Parser.curr = curr
 result = curr.sub_diagram.run()
 LL1Parser.result = result
-while True:
-    while result is True or result[0] is True:
-        if type(result) is tuple:
-            result = non_terminal_end(result[1])
-        else:
-            result = non_terminal_end()
+try:
+    while True:
+        while result is True or result[0] is True:
+            if type(result) is tuple:
+                result = non_terminal_end(result[1])
+            else:
+                result = non_terminal_end()
+            if result == 'END':
+                break
         if result == 'END':
-            print_nodes(head)
             report()
             break
-    if result == 'END':
-        print_nodes(head)
+        #
         report()
-        break
-    non_terminal_name, next_state, token = result[0], result[1], result[2]
-    result = non_terminal_init(non_terminal_name, next_state, token)
+        print('------')
+        #
+        non_terminal_name, next_state, token = result[0], result[1], result[2]
+        result = non_terminal_init(non_terminal_name, next_state, token)
+except Exception as e:
+    report()
+    print(e.traceback())
