@@ -125,6 +125,162 @@ Assign_2 -> ( Expression ) Assign_3
 
 Assign_3 -> Term_1 AdditiveExpression_1 FAdditiveExpression .
 
-Assign_1 -> eq FID Expression
-           |FID Term_1 AdditiveExpression_1 FAdditiveExpression
+Assign_1 -> Y
+           |bropen Expression brclose X
+           |X
            |( Args ) Term_1 AdditiveExpression_1 FAdditiveExpression .
+
+Y -> eq FID Expression.
+
+X -> Term_1 AdditiveExpression_1 FAdditiveExpression.
+
+
+
+Program -> DeclarationList eof .
+
+DeclarationList -> DeclarationList_1 .
+
+DeclarationList_1 -> Declaration DeclarationList_1
+                    |.
+
+Declaration -> TypeSpecifier FTypeSpecifier_2 .
+
+FTypeSpecifier_2 -> id Fid_4 .
+
+Fid_4 -> Fid_1
+        |( Params ) CompoundStmt .
+
+VarDeclaration -> TypeSpecifier FTypeSpecifier .
+
+FTypeSpecifier -> id Fid_1 .
+
+Fid_1 -> ;
+        |bropen num brclose ; .
+
+TypeSpecifier -> void
+                |int .
+
+FunDeclaration -> TypeSpecifier id ( Params ) CompoundStmt .
+
+Params -> int FTypeSpecifier_1 ParamList_1
+         |void FParam .
+
+FParam -> FTypeSpecifier_1 ParamList_1
+         |.
+
+ParamList -> Param ParamList_1 .
+
+ParamList_1 -> comma Param ParamList_1
+              |.
+
+Param -> TypeSpecifier FTypeSpecifier_1 .
+
+FTypeSpecifier_1 -> id Fid_2 .
+
+Fid_2 ->
+        |bropen brclose .
+
+CompoundStmt -> cropen DeclarationList StatementList crclose .
+
+StatementList -> StatementList_1 .
+
+StatementList_1 -> Statement StatementList_1
+                  |.
+
+Statement -> ExpressionStmt
+            |CompoundStmt
+            |SelectionStmt
+            |IterationStmt
+            |ReturnStmt
+            |SwitchStmt .
+
+ExpressionStmt -> Expression ;
+                 |continue ;
+                 |break ;
+                 |; .
+
+SelectionStmt -> if ( Expression ) Statement else Statement .
+
+IterationStmt -> while ( Expression ) Statement .
+
+ReturnStmt -> return Freturn .
+
+Freturn -> ;
+          |Expression ; .
+
+SwitchStmt -> switch ( Expression ) cropen CaseStmts DefaultStmt crclose .
+
+CaseStmts -> CaseStmts_1 .
+
+CaseStmts_1 -> CaseStmt CaseStmts_1
+              |.
+
+CaseStmt -> case num : StatementList .
+
+DefaultStmt -> default : StatementList
+              |.
+
+Expression -> id FExpr
+             |Term_2 AdditiveExpression_1 FAdditiveExpression .
+
+FExpr -> Fid FExpr_1
+        |( Args ) Term_1 AdditiveExpression_1 FAdditiveExpression .
+
+FExpr_1 -> eq Expression
+          | Term_1 AdditiveExpression_1 FAdditiveExpression .
+
+Var -> id Fid .
+
+Fid ->
+      |bropen Expression brclose .
+
+SimpleExpression -> AdditiveExpression FAdditiveExpression .
+
+FAdditiveExpression -> Relop AdditiveExpression
+                      |.
+
+Relop -> less
+        |deq .
+
+AdditiveExpression -> Term AdditiveExpression_1 .
+
+AdditiveExpression_1 -> Addop Term AdditiveExpression_1
+                       |.
+
+Addop -> +
+        |minus .
+
+Term -> SignedFactor Term_1 .
+
+Term_1 -> * SignedFactor Term_1
+         |.
+
+Term_2 -> SignedFactor_2 Term_1 .
+
+SignedFactor -> Factor
+               |+ Factor
+               |minus Factor .
+
+SignedFactor_2 -> Factor_2
+               |+ Factor
+               |minus Factor .
+
+Factor -> ( Expression )
+         |id Fid_3
+         |num .
+
+Factor_2 -> ( Expression )
+         |num .
+
+Fid_3 -> Fid
+        |( Args ) .
+
+Call -> id ( Args ) .
+
+Args -> ArgList
+       |.
+
+ArgList -> Expression ArgList_1 .
+
+ArgList_1 -> comma Expression ArgList_1
+            |.
