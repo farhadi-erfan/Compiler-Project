@@ -1,6 +1,0 @@
-#8 : Syntax Error! Unexpected =
-#8 : Syntax Error! Missing Term_1
-#9 : Syntax Error! Unexpected id
-#9 : Syntax Error! Missing AdditiveExpr_1
-#9 : Syntax Error! Unexpected =
-#9 : Syntax Error! Missing FAdditiveExpr

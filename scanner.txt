@@ -5,6 +5,4 @@
 5. (KEYWORD, return) (ID, k) (SYMBOL, [) (NUM, 0) (SYMBOL, ]) (SYMBOL, +) (ID, k) (SYMBOL, [) (NUM, 1) (SYMBOL, ]) (SYMBOL, ;)
 6. (SYMBOL, })
 7. (KEYWORD, int) (ID, fff) (SYMBOL, [) (NUM, 2) (SYMBOL, ]) (SYMBOL, ;)
-8. (ID, fff) (SYMBOL, [) (NUM, 0) (SYMBOL, ]) (SYMBOL, =) (ID, d) (SYMBOL, ;)
-9. (ID, fff) (SYMBOL, [) (NUM, 1) (SYMBOL, ]) (SYMBOL, =) (ID, d) (SYMBOL, +) (NUM, 1) (SYMBOL, ;)
-10. (ID, f)
+8. (ID, fff) (SYMBOL, [) (NUM, 0) (SYMBOL, ]) (SYMBOL, =)

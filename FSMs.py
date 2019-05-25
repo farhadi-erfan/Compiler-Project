@@ -124,13 +124,14 @@ CaseStmt = ({'src': 0, 'dst': 1, 'condition': 'case', 'callback': None, 'name': 
 
 DefaultStmt = ({'src': 0, 'dst': 1, 'condition': 'default', 'callback': None, 'name': 'DefaultStmt'},
                {'src': 1, 'dst': 2, 'condition': ':', 'callback': None},
-               {'src': 2, 'dst': 3, 'condition': None, 'callback': 'StatementList', 'Finish': True},
+               {'src':2, 'dst': 3, 'condition': None, 'callback': 'StatementList', 'Finish': True},
                {'src': 0, 'dst': 3, 'condition': '', 'callback': None, 'Finish': True})
 
 Expr = ({'src': 0, 'dst': 1, 'condition': 'id', 'callback': None, 'name': 'Expr'},
-        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Assign_1', 'Finish': True},
-        {'src': 0, 'dst': 2, 'condition': None, 'callback': 'Assign_2', 'Finish': True},
-        {'src': 0, 'dst': 3, 'condition': None, 'callback': 'SimpleExpr', 'Finish': True})
+        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FExpr', 'Finish': True},
+        {'src': 0, 'dst': 2, 'condition': None, 'callback': 'Term_2'},
+        {'src': 2, 'dst': 3, 'condition': None, 'callback': 'AdditiveExpr_1'},
+        {'src': 3, 'dst': 4, 'condition': None, 'callback': 'FAdditiveExpr', 'Finish': True})
 
 FExpr = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid', 'name': 'FExpr'},
          {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FExpr1', 'Finish': True},
@@ -142,7 +143,7 @@ FExpr = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid', 'name': 'FEx
          {'src': 6, 'dst': 7, 'condition': None, 'callback': 'FAdditiveExpr', 'Finish': True})
 
 FExpr1 = ({'src': 0, 'dst': 1, 'condition': 'eq', 'callback': None, 'name': 'FExpr1'},
-          {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FExpr1', 'Finish': True},
+          {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Expr', 'Finish': True},
           {'src': 0, 'dst': 5, 'condition': None, 'callback': 'Term_1'},
           {'src': 5, 'dst': 6, 'condition': None, 'callback': 'AdditiveExpr_1'},
           {'src': 6, 'dst': 7, 'condition': None, 'callback': 'FAdditiveExpr', 'Finish': True})
@@ -183,7 +184,7 @@ Term_2 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'SignedFactor2', '
 
 
 SignedFactor = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Factor', 'Finish': True, 'name': 'SignedFactor'},
-                {'src': 0, 'dst': 2, 'condition': '+', 'callback': None},
+                {'src': 0,'dst': 2, 'condition': '+', 'callback': None},
                 {'src': 2, 'dst': 1, 'condition': None, 'callback': 'Factor', 'Finish': True},
                 {'src': 0, 'dst': 3, 'condition': '-', 'callback': None},
                 {'src': 3, 'dst': 1, 'condition': None, 'callback': 'Factor', 'Finish': True})
