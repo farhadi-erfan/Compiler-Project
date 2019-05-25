@@ -15,7 +15,7 @@ spaces = [' ', '\n', '\t']
 class LexicalAnalyzer:
     def __init__(self):
         self.line_num = 1
-        self.file = Util.read('file')
+        self.file = Util.read('file2')
         self.unread_parts = self.file
         self.errors, self.tokens = {}, {}
 
@@ -77,23 +77,23 @@ class LexicalAnalyzer:
             return self.omit_start('WHITESPACE', 1)
         return self.omit_start('ERROR', 1)
 
-la = LexicalAnalyzer()
-# lexical analysis
-while True:
-    token = la.get_next_token_lexical()
-    if token[0].endswith('ERROR'):
-        if la.line_num in la.errors.keys():
-            la.errors[la.line_num] += ' (' + token[1] + ', invalid input)'
-        else:
-            la.errors[la.line_num] = '(' + token[1] + ', invalid input)'
-    else:
-        if token[0] == 'WHITESPACE' or token[0] == 'COMMENT':
-            continue
-        if la.line_num in la.tokens.keys():
-            la.tokens[la.line_num] += ' (' + token[0] + ', ' + token[1] + ')'
-            # la.tokens[la.line_num] += [token]
-        else:
-            la.tokens[la.line_num] = '(' + token[0] + ', ' + token[1] + ')'
-            # la.tokens[la.line_num] = [token]
-        if token[0] == 'EOF':
-            break
+# la = LexicalAnalyzer()
+# # lexical analysis
+# while True:
+#     token = la.get_next_token_lexical()
+#     if token[0].endswith('ERROR'):
+#         if la.line_num in la.errors.keys():
+#             la.errors[la.line_num] += ' (' + token[1] + ', invalid input)'
+#         else:
+#             la.errors[la.line_num] = '(' + token[1] + ', invalid input)'
+#     else:
+#         if token[0] == 'WHITESPACE' or token[0] == 'COMMENT':
+#             continue
+#         if la.line_num in la.tokens.keys():
+#             la.tokens[la.line_num] += ' (' + token[0] + ', ' + token[1] + ')'
+#             # la.tokens[la.line_num] += [token]
+#         else:
+#             la.tokens[la.line_num] = '(' + token[0] + ', ' + token[1] + ')'
+#             # la.tokens[la.line_num] = [token]
+#         if token[0] == 'EOF':
+#             break
