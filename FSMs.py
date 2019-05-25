@@ -14,7 +14,7 @@ Dec = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'TS', 'name': 'Dec'},
 FTS2 = ({'src': 0, 'dst': 1, 'condition': 'id', 'callback': None, 'name': 'FTS2'},
         {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Fid4', 'Finish': True})
 
-Fid4 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid1', 'Finish': True, 'name': 'Fid'},
+Fid4 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid1', 'Finish': True, 'name': 'Fid4'},
         {'src': 0, 'dst': 2, 'condition': '(', 'callback': None},
         {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Params'},
         {'src': 3, 'dst': 4, 'condition': ')', 'callback': None},
@@ -199,7 +199,7 @@ Factor = ({'src': 0, 'dst': 1, 'condition': '(', 'callback': None, 'name': 'Fact
           {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Expr'},
           {'src': 2, 'dst': 3, 'condition': ')', 'callback': None, 'Finish': True},
           {'src': 0, 'dst': 4, 'condition': 'id', 'callback': None},
-          {'src': 4, 'dst': 3, 'condition': None, 'callback': 'Fid1', 'Finish': True},
+          {'src': 4, 'dst': 3, 'condition': None, 'callback': 'Fid3', 'Finish': True},
           {'src': 0, 'dst': 3, 'condition': 'num', 'callback': None, 'Finish': True})
 
 Factor2 = ({'src': 0, 'dst': 1, 'condition': '(', 'callback': None, 'name': 'Factor'},
