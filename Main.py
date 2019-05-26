@@ -74,14 +74,15 @@ try:
             if result == 'END':
                 break
         if result == 'END':
-            report()
+            # report()
             break
         #
-        report()
-        print('------')
+        # report()
+        # print('------')
         #
         non_terminal_name, next_state, token = result[0], result[1], result[2]
         result = non_terminal_init(non_terminal_name, next_state, token)
 except Exception as e:
     report()
     print(e.traceback())
+report()
