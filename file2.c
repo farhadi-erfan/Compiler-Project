@@ -9,7 +9,7 @@ int foo(int d, int e){
 	fff[1] = d + 1;
 	f = foo2(fff);
 	b = e + f;
-	while(d > 0){
+	while(d < 0){
 		f = f + d;
 		d = d - 1;
 		if (d == 4)
@@ -26,7 +26,7 @@ void main(void){
 	b = 5 * a + foo(a, a);
 	arr[1] = b + -3;
 	arr[2] = foo(arr[0], arr[1]);
-	if (b */comment2/* == 3){
+	if (b == 3){
 		arr[0] = -7;	
 	}
 	else

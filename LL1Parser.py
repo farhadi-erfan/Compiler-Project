@@ -75,7 +75,7 @@ class FSM:
                 return 'END'
             if condition is not None and condition != token[0] and condition != '':
                 # terminal
-                parse_errors += ['#{} : Syntax Error! Missing {}\n'.format(token[0], condition)]
+                parse_errors += ['#{} : Syntax Error! Missing {}\n'.format(token[1], condition)]
                 return True, 'Cont'
             if condition is None:
                 # non terminal
