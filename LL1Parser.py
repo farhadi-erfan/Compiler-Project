@@ -8,6 +8,7 @@ head = None
 result = None
 parse_errors = []
 parse_tree = ''
+saved_token = None
 
 class FSM:
     def __init__(self, fsm_map):
@@ -17,9 +18,11 @@ class FSM:
         self.in_error_handling = False
 
     def run(self, token=None):
-        global parse_errors
+        global parse_errors, saved_token
         while True:
-            token = get_next_token() if token is None else token
+            token = saved_token if saved_token is not None else get_next_token() if token is None else token
+            if token == saved_token:
+                saved_token = None
             if self.in_error_handling and token == 'EOF':
                 parse_errors += ['#{} : Syntax Error! Unexpected EndOfFile\n'.format(token[1])]
                 return 'END'
@@ -92,6 +95,10 @@ class FSM:
                     if token[0] == 'EOF':
                         parse_errors += ['#{} : Syntax Error! Unexpected EndOfFile\n'.format(token[1])]
                         return True, 'END'
+                if token[0] in firsts[non_terminal_name]:
+                    global saved_token
+                    saved_token = token
+                    return False, (out['callback'], out['dst'])
                 if non_terminal_name in nullables:
                     return self.process_next(token)
                 else:

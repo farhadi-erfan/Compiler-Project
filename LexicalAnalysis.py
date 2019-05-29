@@ -15,7 +15,7 @@ spaces = [' ', '\n', '\t']
 class LexicalAnalyzer:
     def __init__(self):
         self.line_num = 1
-        self.file = Util.read('file1')
+        self.file = Util.read('Test Error - Parser')
         self.unread_parts = self.file
         self.errors, self.tokens = {}, {}
 
@@ -23,7 +23,6 @@ class LexicalAnalyzer:
         token = self.unread_parts[:token_len]
         self.unread_parts = self.unread_parts[token_len:]
         return token_type, token
-
 
     def get_next_token_lexical(self):
         if len(self.unread_parts) == 0:

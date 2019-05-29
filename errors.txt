@@ -1,0 +1,7 @@
+#7 : Syntax Error! Missing SignedFactor
+#13 : Syntax Error! Unexpected =
+#13 : Syntax Error! Missing Fid4
+#14 : Syntax Error! Missing (
+#16 : Syntax Error! Unexpected [
+#16 : Syntax Error! Unexpected *
+#19 : Syntax Error! Missing Fret
