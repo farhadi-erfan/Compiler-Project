@@ -26,6 +26,8 @@ class FSM:
             status, nxt = self.process_next(token)
             if not status:
                 return nxt[0], nxt[1], token
+            elif nxt == 'END':
+                return 'END'
             elif nxt == 'Finish':
                 return True
             elif nxt[0] == 'Finish':
@@ -72,25 +74,34 @@ class FSM:
             if condition is not None and condition == 'EOF':
                 # eof
                 parse_errors += ['#{} : Syntax Error! Malformed Input\n'.format(token[1])]
-                return 'END'
+                return True, 'END'
             if condition is not None and condition != token[0] and condition != '':
                 # terminal
                 parse_errors += ['#{} : Syntax Error! Missing {}\n'.format(token[1], condition)]
-                return True, 'Cont'
+                if 'Finish' in out.keys():
+                    return True, 'Finish'
+                else:
+                    self.update_state(out['dst'])
+                    return self.process_next(token)
             if condition is None:
                 # non terminal
                 non_terminal_name = out['callback']
-                parse_errors += ['#{} : Syntax Error! Unexpected {}\n'.format(token[1], token[0])]
-                token = get_next_token()
                 while token[0] not in firsts[non_terminal_name] and token[0] not in follows[non_terminal_name]:
+                    parse_errors += ['#{} : Syntax Error! Unexpected {}\n'.format(token[1], token[0])]
                     token = get_next_token()
-                if 'eps' in firsts[non_terminal_name]:
+                    if token[0] == 'EOF':
+                        parse_errors += ['#{} : Syntax Error! Unexpected EndOfFile\n'.format(token[1])]
+                        return True, 'END'
+                if non_terminal_name in nullables:
                     return self.process_next(token)
                 else:
                     if token[0] in follows[non_terminal_name]:
                         parse_errors += ['#{} : Syntax Error! Missing {}\n'.format(token[1], non_terminal_name)]
-                        self.update_state(out['dst'])
-                        return True, 'Cont'
+                        if 'Finish' in transition.keys() and transition:
+                            return True, ('Finish', token)
+                        else:
+                            self.update_state(transition['dst'])
+                            return True, 'Cont'
         return False, None
 
     def update_state(self, new_state):

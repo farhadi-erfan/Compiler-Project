@@ -15,7 +15,7 @@ spaces = [' ', '\n', '\t']
 class LexicalAnalyzer:
     def __init__(self):
         self.line_num = 1
-        self.file = Util.read('file2')
+        self.file = Util.read('file1')
         self.unread_parts = self.file
         self.errors, self.tokens = {}, {}
 
