@@ -85,7 +85,7 @@ fabric.properties
 .idea/sonarlint
 
 # Input and Outputs
-.in_out/*
+in_out/*
 
 # End of https://www.gitignore.io/api/pycharm
 
