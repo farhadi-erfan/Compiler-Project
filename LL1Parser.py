@@ -1,7 +1,5 @@
-from static.FSMs import *
 from static.first_follows import *
-from utils.CodeGeneration import CodeGenerator, SemanticRoutines
-from utils.Stack import Stack
+from CodeGeneration import CodeGenerator, SemanticRoutines
 
 get_next_token = None
 linum = None
