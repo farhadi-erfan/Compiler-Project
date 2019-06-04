@@ -1,7 +1,7 @@
 class Util:
     @classmethod
     def read(cls, file_name):
-        with open(file_name + '.c', 'r') as content_file:
+        with open('in_out/' + file_name + '.c', 'r') as content_file:
             content = content_file.read()
         return content
 
@@ -9,7 +9,6 @@ class Util:
 symbols = [';', ':', ',', '[', ']', '(', ')', '{', '}', '+', '-', '*', '<', '>', '\'']
 keywords = ['if', 'else', 'void', 'int', 'while', 'break', 'continue', 'switch', 'default', 'case', 'return', 'float']
 spaces = [' ', '\n', '\t']
-
 
 
 class LexicalAnalyzer:

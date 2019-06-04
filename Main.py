@@ -6,7 +6,7 @@ from LexicalAnalysis import *
 
 def report():
     global la
-    with open('errors.txt', 'w+') as errors_file:
+    with open('in_out/' + 'errors.txt', 'w+') as errors_file:
         for i in la.errors.keys():
             errors_file.write('{}. '.format(i))
             for v in la.errors[i]:
@@ -15,14 +15,14 @@ def report():
         for i in LL1Parser.parse_errors:
             errors_file.write(i)
 
-    with open('scanner.txt', 'w+') as tokens_file:
+    with open('in_out/' + 'scanner.txt', 'w+') as tokens_file:
         for i in la.tokens.keys():
             tokens_file.write('{}. '.format(i))
             for v in la.tokens[i]:
                 tokens_file.write('{}'.format(v))
             tokens_file.write('\n')
 
-    with open('parse_tree.txt', 'w+') as parse_tree_file:
+    with open('in_out/' + 'parse_tree.txt', 'w+') as parse_tree_file:
         print(LL1Parser.parse_tree)
         LL1Parser.parse_tree = ''
         print_nodes(head)

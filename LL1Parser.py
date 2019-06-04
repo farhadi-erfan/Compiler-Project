@@ -1,5 +1,7 @@
-from FSMs import *
-from first_follows import *
+from static.FSMs import *
+from static.first_follows import *
+from utils.CodeGeneration import CodeGenerator, SemanticRoutines
+from utils.Stack import Stack
 
 get_next_token = None
 linum = None
@@ -10,12 +12,15 @@ parse_errors = []
 parse_tree = ''
 saved_token = None
 
+
 class FSM:
     def __init__(self, fsm_map):
         self.current_state = 0
         self.current_char = ''
         self.fsm_map = fsm_map
         self.in_error_handling = False
+        self.code_generator = CodeGenerator()
+        self.semantic_routines = SemanticRoutines()
 
     def run(self, token=None):
         global parse_errors, saved_token
