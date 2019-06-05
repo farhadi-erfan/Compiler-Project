@@ -12,6 +12,9 @@ class Stack:
     def top(self):
         return self.stack[self.size-1]
 
+    def get_from_top(self, i):
+        return self.stack[self.size - i - 1]
+
     def push(self, key):
         self.stack += [key]
         self.size += 1

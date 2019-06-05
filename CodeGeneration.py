@@ -12,8 +12,3 @@ class CodeGenerator:
         self.temp_index = 500
 
 
-class SemanticRoutines:
-
-    def label(self, cg):
-        cg.ss.push(cg.index)
-

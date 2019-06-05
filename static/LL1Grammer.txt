@@ -5,19 +5,19 @@ DeclarationList -> DeclarationList_1 .
 DeclarationList_1 -> Declaration DeclarationList_1
                     |.
 
-Declaration -> TypeSpecifier FTypeSpecifier_2 .
+Declaration -> TypeSpecifier #ptype FTypeSpecifier_2 .
 
-FTypeSpecifier_2 -> id Fid_4 .
+FTypeSpecifier_2 -> id #plast Fid_4 #vardec.
 
 Fid_4 -> Fid_1
-        |( Params ) CompoundStmt .
+        |( Params ) #plast CompoundStmt .
 
 VarDeclaration -> TypeSpecifier FTypeSpecifier .
 
 FTypeSpecifier -> id Fid_1 .
 
-Fid_1 -> ;
-        |bropen num brclose ; .
+Fid_1 -> ; #plast
+        |bropen num #plast brclose #plast ; .
 
 TypeSpecifier -> void
                 |int .
