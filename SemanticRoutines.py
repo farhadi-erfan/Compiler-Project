@@ -1,12 +1,15 @@
 class SemanticRoutines:
 
-    def label(self, cg):
+    @staticmethod
+    def label(cg, token=None):
         cg.ss.push(cg.index)
 
-    def plast(self, cg, key):
-        cg.ss.push(key)
+    @staticmethod
+    def plast(cg, token):
+        cg.ss.push(token)
 
-    def vardec(self, cg):
+    @staticmethod
+    def vardec(cg, token=None):
         identifier_token = cg.ss.top()
 
         if identifier_token == ';':
@@ -14,7 +17,7 @@ class SemanticRoutines:
             cg.symbol_table.push({
                 'token': cg.ss.get_from_top(1),
                 'type': cg.ss.get_from_top(2),
-                'addr': cg.ss.data_index,
+                'addr': cg.data_index,
                 'ref': True
             })
             cg.data_index += 4

@@ -1,4 +1,3 @@
-import traceback
 import LL1Parser
 from LL1Parser import *
 from LexicalAnalysis import *
@@ -58,7 +57,7 @@ LL1Parser.get_next_token = get_next_token
 la = LexicalAnalyzer()
 
 PROGRAM_sub_diagram = FSM(PROGRAM)
-head = Node(None, PROGRAM_sub_diagram, None, 'NonTerm')
+head = Node(None, PROGRAM_sub_diagram, None, 'NonTerm', None)
 LL1Parser.head = head
 curr = head
 LL1Parser.curr = curr
@@ -80,8 +79,8 @@ try:
         # report()
         # print('------')
         #
-        non_terminal_name, next_state, token = result[0], result[1], result[2]
-        result = non_terminal_init(non_terminal_name, next_state, token)
+        non_terminal_name, transition, token = result[0], result[1], result[2]
+        result = non_terminal_init(non_terminal_name, transition, token)
 except Exception as e:
     report()
     print(e.traceback())

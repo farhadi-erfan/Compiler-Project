@@ -1,5 +1,7 @@
 from static.first_follows import *
-from CodeGeneration import CodeGenerator, SemanticRoutines
+from static.FSMs import *
+from CodeGeneration import CodeGenerator as CG
+from SemanticRoutines import SemanticRoutines as SR
 
 get_next_token = None
 linum = None
@@ -9,6 +11,8 @@ result = None
 parse_errors = []
 parse_tree = ''
 saved_token = None
+last_read_token = None
+cg = CG()
 
 
 class FSM:
@@ -17,13 +21,18 @@ class FSM:
         self.current_char = ''
         self.fsm_map = fsm_map
         self.in_error_handling = False
-        self.code_generator = CodeGenerator()
-        self.semantic_routines = SemanticRoutines()
 
     def run(self, token=None):
-        global parse_errors, saved_token
+        global parse_errors, saved_token, last_read_token
         while True:
-            token = saved_token if saved_token is not None else get_next_token() if token is None else token
+            if saved_token is not None:
+                token = saved_token
+            else:
+                if token is None:
+                    token = get_next_token()
+                    last_read_token = token
+                else:
+                    token = token
             if token == saved_token:
                 saved_token = None
             if self.in_error_handling and token == 'EOF':
@@ -42,7 +51,7 @@ class FSM:
                 token = None
 
     def process_next(self, token):
-        global parse_errors
+        global parse_errors, last_read_token
         self.current_char = token[0]
         frozen_state = self.current_state
         for transition in self.fsm_map:
@@ -51,18 +60,18 @@ class FSM:
                 if condition and transition['condition'] == token[0]:
                     #terminal
                     self.in_error_handling = False
-                    terminal(token)
+                    terminal(token, transition.get('post', None))
+                    self.update_state(transition['dst'])
                     if 'Finish' in transition.keys() and transition:
                         return True, 'Finish'
                     else:
-                        self.update_state(transition['dst'])
                         return True, 'Cont'
                 if condition == '':
                     #eps
                     if token[0] in follows[self.fsm_map[0]['name']]:
                         self.update_state(transition['dst'])
                         self.in_error_handling = False
-                        eps()
+                        eps(transition.get('post', None))
                         return True, ('Finish', token)
                 if condition is None:
                     #non terminal
@@ -70,7 +79,7 @@ class FSM:
                     if token[0] in firsts[non_terminal_name] or (
                             non_terminal_name in nullables and token[0] in follows[non_terminal_name]):
                         self.in_error_handling = False
-                        return False, (transition['callback'], transition['dst'])
+                        return False, (transition['callback'], transition)
         # error handling
         self.in_error_handling = True
         outs = self.state_transition(frozen_state)
@@ -95,6 +104,7 @@ class FSM:
                 while token[0] not in firsts[non_terminal_name] and token[0] not in follows[non_terminal_name]:
                     parse_errors += ['#{} : Syntax Error! Unexpected {}\n'.format(token[1], token[0])]
                     token = get_next_token()
+                    last_read_token = token
                     if token[0] == 'EOF':
                         parse_errors += ['#{} : Syntax Error! Unexpected EndOfFile\n'.format(token[1])]
                         return True, 'END'
@@ -129,16 +139,17 @@ class FSM:
 
 
 class Node:
-    def __init__(self, parent, sub_diagram, parent_next_state, type):
+    def __init__(self, parent, sub_diagram, parent_next_state, n_type, post):
         self.parent = parent
         self.level = 0 if parent is None else parent.level + 1
         self.sub_diagram = sub_diagram
         self.parent_next_state = parent_next_state
-        self.type = type
+        self.type = n_type
+        self.post_routine = post
         self.children = []
-        if type == 'Term':
+        if self.type == 'Term':
             self.name = sub_diagram
-        elif type == 'NonTerm':
+        elif self.type == 'NonTerm':
             self.name = sub_diagram.fsm_map[0]['name']
 
     def __repr__(self):
@@ -146,15 +157,20 @@ class Node:
                + self.parent_next_state + ' type: ' + self.type
 
 
-def terminal(term):
+def terminal(term, post):
     if term[0] == 'id' or term[0] == 'num':
-        curr.children += [Node(curr, term[2], None, 'Term')]
+        curr.children += [Node(curr, term[2], None, 'Term', post)]
     else:
-        curr.children += [Node(curr, term[0], None, 'Term')]
+        curr.children += [Node(curr, term[0], None, 'Term', post)]
+    if post is not None:
+        cg.execute(getattr(SR, post), last_read_token)
 
 
-def eps():
-    curr.children += [Node(curr, '', None, 'Term')]
+def eps(post):
+    curr.children += [Node(curr, '', None, 'Term', post)]
+    if post is not None:
+        cg.execute(getattr(SR, post), last_read_token)
+
 
 def is_it_the_end():
     l = []
@@ -168,7 +184,10 @@ def is_it_the_end():
 def non_terminal_end(token=None):
     global curr, head
     if curr.parent is not None:
+        post = curr.post_routine
         next = curr.parent_next_state
+        if post is not None:
+            cg.execute(getattr(SR, post), last_read_token)
         curr = curr.parent
         curr.sub_diagram.update_state(next)
         if is_it_the_end():
@@ -179,9 +198,11 @@ def non_terminal_end(token=None):
         return 'END'
 
 
-def non_terminal_init(non_terminal_name, next_state, token):
+def non_terminal_init(non_terminal_name, transition, token):
     global curr
-    curr.children += [Node(curr, FSM(globals()[non_terminal_name]), next_state, 'NonTerm')]
+    next_state = transition['dst']
+    post_routine = transition.get('post', None)
+    curr.children += [Node(curr, FSM(globals()[non_terminal_name]), next_state, 'NonTerm', post_routine)]
     curr = curr.children[-1]
     return curr.sub_diagram.run(token)
 
