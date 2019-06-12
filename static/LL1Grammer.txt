@@ -83,16 +83,14 @@ CaseStmt -> case num : StatementList .
 DefaultStmt -> default : StatementList
               |.
 
-Expression -> id FExpr
+Expression -> id #paddr FExpr
              |Term_2 AdditiveExpression_1 FAdditiveExpression .
 
-FExpr -> Fid FExpr_1
+FExpr -> Fid #plast FExpr_1
         |( Args ) Term_1 AdditiveExpression_1 FAdditiveExpression .
 
 FExpr_1 -> eq Expression
           | Term_1 AdditiveExpression_1 FAdditiveExpression .
-
-Var -> id Fid .
 
 Fid ->
       |bropen Expression brclose .
@@ -102,8 +100,8 @@ SimpleExpression -> AdditiveExpression FAdditiveExpression .
 FAdditiveExpression -> Relop AdditiveExpression
                       |.
 
-Relop -> less
-        |deq .
+Relop -> <
+        |== .
 
 AdditiveExpression -> Term AdditiveExpression_1 .
 
