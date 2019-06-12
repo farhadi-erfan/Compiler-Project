@@ -8,11 +8,11 @@ DL1 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Dec', 'name': 'DL1'}
        {'src': 0, 'dst': 2, 'condition': '', 'callback': None, 'Finish': True},
        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'DL1', 'Finish': True})
 
-Dec = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'TS', 'name': 'Dec'},
+Dec = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'TS', 'name': 'Dec', 'post': 'plast'},
        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FTS2', 'Finish': True})
 
-FTS2 = ({'src': 0, 'dst': 1, 'condition': 'id', 'callback': None, 'name': 'FTS2'},
-        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Fid4', 'Finish': True})
+FTS2 = ({'src': 0, 'dst': 1, 'condition': 'id', 'callback': None, 'name': 'FTS2', 'post': 'plast'},
+        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Fid4', 'Finish': True, 'post': 'vardec'})
 
 Fid4 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid1', 'Finish': True, 'name': 'Fid4'},
         {'src': 0, 'dst': 2, 'condition': '(', 'callback': None},
@@ -20,7 +20,7 @@ Fid4 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid1', 'Finish': Tr
         {'src': 3, 'dst': 4, 'condition': ')', 'callback': None},
         {'src': 4, 'dst': 2, 'condition': None, 'callback': 'CompStmt', 'Finish': True})
 
-Fid1 = ({'src': 0, 'dst': 1, 'condition': ';', 'callback': None, 'Finish': True, 'name': 'Fid1'},
+Fid1 = ({'src': 0, 'dst': 1, 'condition': ';', 'callback': None, 'Finish': True, 'name': 'Fid1', 'post': 'plast'},
         {'src': 0, 'dst': 2, 'condition': '[', 'callback': None},
         {'src': 2, 'dst': 3, 'condition': 'num', 'callback': None},
         {'src': 3, 'dst': 4, 'condition': ']', 'callback': None},

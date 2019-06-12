@@ -21,9 +21,7 @@ class CodeGenerator:
         res = self.temp_index
         self.temp_index += 4
         return res
-
-فرچم
-بعد ۱۲ تا تونل
-۳ راهی
-سمت راست
-خلخال
+    def execute(self, func, token):
+        key = token[2] if (token[0] == 'id' or token[0] == 'num') else token[0]
+        func(self, key)
+        print(self.symbol_table)

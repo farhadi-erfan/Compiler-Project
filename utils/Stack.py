@@ -4,8 +4,8 @@ class Stack:
         self.size = 0
 
     def pop(self, num=1):
-        if num >= self.size:
-            raise Exception('pop size bigger than stack size!')
+        if num > self.size:
+            raise Exception('pop size bigger than stack size!, {}, {}'.format(self.size, num))
         self.stack = self.stack[:self.size-num+1]
         self.size -= num
 
@@ -19,3 +19,5 @@ class Stack:
         self.stack += [key]
         self.size += 1
 
+    def __repr__(self):
+        return str(self.stack)

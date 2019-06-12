@@ -5,6 +5,7 @@ class Util:
             content = content_file.read()
         return content
 
+
 # except for = and ==
 symbols = [';', ':', ',', '[', ']', '(', ')', '{', '}', '+', '-', '*', '<', '>', '\'']
 keywords = ['if', 'else', 'void', 'int', 'while', 'break', 'continue', 'switch', 'default', 'case', 'return', 'float']
@@ -14,7 +15,7 @@ spaces = [' ', '\n', '\t']
 class LexicalAnalyzer:
     def __init__(self):
         self.line_num = 1
-        self.file = Util.read('Test Error - Parser')
+        self.file = Util.read('sample')
         self.unread_parts = self.file
         self.errors, self.tokens = {}, {}
 
