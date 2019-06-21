@@ -97,7 +97,7 @@ Fid ->
 
 SimpleExpression -> AdditiveExpression FAdditiveExpression .
 
-FAdditiveExpression -> Relop AdditiveExpression
+FAdditiveExpression -> Relop #plast AdditiveExpression #calc_relop
                       |.
 
 Relop -> <

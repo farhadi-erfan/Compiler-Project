@@ -153,8 +153,10 @@ Fid = ({'src': 0, 'dst': 1, 'condition': '[', 'callback': None, 'name': 'Fid'},
        {'src': 2, 'dst': 3, 'condition': ']', 'callback': None, 'Finish': True},
        {'src': 0, 'dst': 1, 'condition': '', 'callback': None, 'Finish': True})
 
-FAdditiveExpr = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Relop', 'name': 'FAdditiveExpr'},
-                       {'src': 1, 'dst': 2, 'condition': None, 'callback': 'AdditiveExpr', 'Finish': True},
+FAdditiveExpr = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Relop', 'name': 'FAdditiveExpr',
+                  'post': 'plast'},
+                       {'src': 1, 'dst': 2, 'condition': None, 'callback': 'AdditiveExpr', 'Finish': True,
+                        'post': 'calc_relop'},
                        {'src': 0, 'dst': 2, 'condition': '', 'callback': None, 'Finish': True})
 
 Relop = ({'src': 0, 'dst': 1, 'condition': '<', 'callback': None, 'name': 'Relop', 'Finish': True},

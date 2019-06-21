@@ -137,3 +137,26 @@ class SemanticRoutines:
             SemanticRoutines.not_(cg, val, t1)
             val = t1
         cg.ss.push(val)
+
+    @staticmethod
+    def lt(cg, s1, s2, d):
+        cg.pb[cg.index] = '(LT, {}, {}, {})'.format(s1, s2, d)
+        cg.index += 4
+
+    @staticmethod
+    def eq(cg, s1, s2, d):
+        cg.pb[cg.index] = '(EQ, {}, {}, {})'.format(s1, s2, d)
+        cg.index += 4
+
+    @staticmethod
+    def calc_relop(cg, token=None):
+        relop = cg.ss.get_from_top(1)
+        lhs = cg.ss.get_from_top(2)
+        rhs = cg.ss.top()
+        cg.ss.pop(3)
+        t = SemanticRoutines.get_temp(cg)
+        if relop == '==':
+            SemanticRoutines.eq(cg, lhs, rhs, t)
+        elif relop == '<':
+            SemanticRoutines.lt(cg, lhs, rhs, t)
+        cg.ss.push(t)
