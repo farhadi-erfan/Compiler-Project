@@ -17,7 +17,7 @@ VarDeclaration -> TypeSpecifier FTypeSpecifier .
 FTypeSpecifier -> id Fid_1 .
 
 Fid_1 -> ; #plast
-        |bropen num #plast brclose #plast ; .
+        |bropen num #pnum brclose #plast ; .
 
 TypeSpecifier -> void
                 |int .
@@ -83,13 +83,13 @@ CaseStmt -> case num : StatementList .
 DefaultStmt -> default : StatementList
               |.
 
-Expression -> id #paddr FExpr
+Expression -> id #plast FExpr
              |Term_2 AdditiveExpression_1 FAdditiveExpression .
 
-FExpr -> Fid #plast FExpr_1
-        |( Args ) Term_1 AdditiveExpression_1 FAdditiveExpression .
+FExpr -> Fid #calc_addr FExpr_1
+        |( Args )  Term_1 AdditiveExpression_1 FAdditiveExpression . #TODO: function call
 
-FExpr_1 -> eq Expression
+FExpr_1 -> eq Expression #assign_expr
           | Term_1 AdditiveExpression_1 FAdditiveExpression .
 
 Fid ->
@@ -105,33 +105,33 @@ Relop -> <
 
 AdditiveExpression -> Term AdditiveExpression_1 .
 
-AdditiveExpression_1 -> Addop Term AdditiveExpression_1
+AdditiveExpression_1 -> Addop Term #calc_addop AdditiveExpression_1
                        |.
 
-Addop -> +
-        |minus .
+Addop -> + #plast
+        |minus #plast .
 
 Term -> SignedFactor Term_1 .
 
-Term_1 -> * SignedFactor Term_1
+Term_1 -> * SignedFactor #calc_mult Term_1
          |.
 
 Term_2 -> SignedFactor_2 Term_1 .
 
-SignedFactor -> Factor
-               |+ Factor
-               |minus Factor .
+SignedFactor -> #null Factor #calc_sign
+               |+ #plast Factor #calc_sign
+               |minus #plast Factor #calc_sign.
 
-SignedFactor_2 -> Factor_2
-               |+ Factor
-               |minus Factor .
+SignedFactor_2 ->#null Factor_2 #calc_sign
+               |+ #plast Factor #calc_sign
+               |minus #plast Factor #calc_sign.
 
 Factor -> ( Expression )
          |id Fid_3
-         |num .
+         |num #pnum .
 
 Factor_2 -> ( Expression )
-         |num .
+         |num #pnum.
 
 Fid_3 -> Fid
         |( Args ) .

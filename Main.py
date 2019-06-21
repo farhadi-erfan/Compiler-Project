@@ -22,7 +22,7 @@ def report():
             tokens_file.write('\n')
 
     with open('in_out/' + 'parse_tree.txt', 'w+') as parse_tree_file:
-        print(LL1Parser.parse_tree)
+        # print(LL1Parser.parse_tree)
         LL1Parser.parse_tree = ''
         print_nodes(head)
         parse_tree_file.write(LL1Parser.parse_tree)
@@ -80,6 +80,7 @@ try:
         # print('------')
         #
         non_terminal_name, transition, token = result[0], result[1], result[2]
+        # print(non_terminal_name)
         result = non_terminal_init(non_terminal_name, transition, token)
 except Exception as e:
     report()

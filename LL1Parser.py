@@ -201,6 +201,9 @@ def non_terminal_end(token=None):
 def non_terminal_init(non_terminal_name, transition, token):
     global curr
     next_state = transition['dst']
+    pre = transition.get('pre', None)
+    if pre:
+        cg.execute(getattr(SR, pre), last_read_token)
     post_routine = transition.get('post', None)
     curr.children += [Node(curr, FSM(globals()[non_terminal_name]), next_state, 'NonTerm', post_routine)]
     curr = curr.children[-1]

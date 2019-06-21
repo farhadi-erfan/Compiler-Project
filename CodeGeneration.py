@@ -15,13 +15,19 @@ class CodeGenerator:
         for symcell in self.symbol_table.stack:
             if symcell['token'] == label:
                 return symcell['addr']
-        raise Exception('Token not valid!')
+        raise Exception("label not found!")
 
     def get_temp(self):
         res = self.temp_index
         self.temp_index += 4
         return res
+
     def execute(self, func, token):
         key = token[2] if (token[0] == 'id' or token[0] == 'num') else token[0]
         func(self, key)
-        print(self.symbol_table)
+        self.print_pb()
+
+    def print_pb(self):
+        for ind, x in enumerate(self.pb):
+            if x != 0:
+                print(ind, x)

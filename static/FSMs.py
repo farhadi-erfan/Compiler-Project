@@ -22,8 +22,8 @@ Fid4 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid1', 'Finish': Tr
 
 Fid1 = ({'src': 0, 'dst': 1, 'condition': ';', 'callback': None, 'Finish': True, 'name': 'Fid1', 'post': 'plast'},
         {'src': 0, 'dst': 2, 'condition': '[', 'callback': None},
-        {'src': 2, 'dst': 3, 'condition': 'num', 'callback': None},
-        {'src': 3, 'dst': 4, 'condition': ']', 'callback': None},
+        {'src': 2, 'dst': 3, 'condition': 'num', 'callback': None, 'post': 'plast'},
+        {'src': 3, 'dst': 4, 'condition': ']', 'callback': None, 'post': 'plast'},
         {'src': 4, 'dst': 5, 'condition': ';', 'callback': None, 'Finish': True})
 
 TS = ({'src': 0, 'dst': 1, 'condition': 'int', 'callback': None, 'name': 'TS', 'Finish': True},
@@ -127,13 +127,13 @@ DefaultStmt = ({'src': 0, 'dst': 1, 'condition': 'default', 'callback': None, 'n
                {'src':2, 'dst': 3, 'condition': None, 'callback': 'SL', 'Finish': True},
                {'src': 0, 'dst': 3, 'condition': '', 'callback': None, 'Finish': True})
 
-Expr = ({'src': 0, 'dst': 1, 'condition': 'id', 'callback': None, 'name': 'Expr'},
+Expr = ({'src': 0, 'dst': 1, 'condition': 'id', 'callback': None, 'name': 'Expr', 'post': 'plast'},
         {'src': 1, 'dst': 4, 'condition': None, 'callback': 'FExpr', 'Finish': True},
         {'src': 0, 'dst': 2, 'condition': None, 'callback': 'Term_2'},
         {'src': 2, 'dst': 3, 'condition': None, 'callback': 'AdditiveExpr_1'},
         {'src': 3, 'dst': 4, 'condition': None, 'callback': 'FAdditiveExpr', 'Finish': True})
 
-FExpr = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid', 'name': 'FExpr'},
+FExpr = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid', 'name': 'FExpr', 'post': 'calc_addr'},
          {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FExpr1', 'Finish': True},
          {'src': 0, 'dst': 2, 'condition': '(', 'callback': None},
          {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Args'},
@@ -143,7 +143,7 @@ FExpr = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid', 'name': 'FEx
          {'src': 6, 'dst': 7, 'condition': None, 'callback': 'FAdditiveExpr', 'Finish': True})
 
 FExpr1 = ({'src': 0, 'dst': 1, 'condition': '=', 'callback': None, 'name': 'FExpr1'},
-          {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Expr', 'Finish': True},
+          {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Expr', 'Finish': True, 'post': 'assign_expr'},
           {'src': 0, 'dst': 5, 'condition': None, 'callback': 'Term_1'},
           {'src': 5, 'dst': 6, 'condition': None, 'callback': 'AdditiveExpr_1'},
           {'src': 6, 'dst': 7, 'condition': None, 'callback': 'FAdditiveExpr', 'Finish': True})
@@ -164,18 +164,18 @@ AdditiveExpr = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Term', 'nam
                       {'src': 1, 'dst': 2, 'condition': None, 'callback': 'AdditiveExpr_1', 'Finish': True})
 
 AdditiveExpr_1 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Addop', 'name': 'AdditiveExpr_1'},
-                  {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Term'},
+                  {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Term', 'post': 'calc_addop'},
                   {'src': 2, 'dst': 3, 'condition': None, 'callback': 'AdditiveExpr_1', 'Finish': True},
                   {'src': 0, 'dst': 3, 'condition': '', 'callback': None, 'Finish': True})
 
-Addop = ({'src': 0, 'dst': 1, 'condition': '+', 'callback': None, 'name': 'Addop', 'Finish': True},
-         {'src': 0, 'dst': 1, 'condition': '-', 'callback': None, 'name': 'Addop', 'Finish': True})
+Addop = ({'src': 0, 'dst': 1, 'condition': '+', 'callback': None, 'name': 'Addop', 'Finish': True, 'post': 'plast'},
+         {'src': 0, 'dst': 1, 'condition': '-', 'callback': None, 'name': 'Addop', 'Finish': True, 'post': 'plast'})
 
 Term = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'SignedFactor', 'name': 'Term'},
         {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Term_1', 'Finish': True})
 
 Term_1 = ({'src': 0, 'dst': 1, 'condition': '*', 'callback': None, 'name': 'Term_1'},
-          {'src': 1, 'dst': 2, 'condition': None, 'callback': 'SignedFactor'},
+          {'src': 1, 'dst': 2, 'condition': None, 'callback': 'SignedFactor', 'post': 'calc_mult'},
           {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Term_1', 'Finish': True},
           {'src': 0, 'dst': 3, 'condition': '', 'callback': None, 'Finish': True})
 
@@ -183,17 +183,19 @@ Term_2 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'SignedFactor2', '
         {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Term_1', 'Finish': True})
 
 
-SignedFactor = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Factor', 'Finish': True, 'name': 'SignedFactor'},
-                {'src': 0,'dst': 2, 'condition': '+', 'callback': None},
-                {'src': 2, 'dst': 1, 'condition': None, 'callback': 'Factor', 'Finish': True},
-                {'src': 0, 'dst': 3, 'condition': '-', 'callback': None},
-                {'src': 3, 'dst': 1, 'condition': None, 'callback': 'Factor', 'Finish': True})
+SignedFactor = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Factor', 'Finish': True,
+                 'name': 'SignedFactor', 'pre': 'null', 'post': 'calc_sign'},
+                {'src': 0,'dst': 2, 'condition': '+', 'callback': None, 'post': 'plast'},
+                {'src': 2, 'dst': 1, 'condition': None, 'callback': 'Factor', 'post': 'calc_sign', 'Finish': True},
+                {'src': 0, 'dst': 3, 'condition': '-', 'callback': None, 'post': 'plast'},
+                {'src': 3, 'dst': 1, 'condition': None, 'callback': 'Factor', 'post': 'calc_sign', 'Finish': True})
 
-SignedFactor2 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Factor2', 'Finish': True, 'name': 'SignedFactor2'},
-                {'src': 0, 'dst': 2, 'condition': '+', 'callback': None},
-                {'src': 2, 'dst': 1, 'condition': None, 'callback': 'Factor', 'Finish': True},
-                {'src': 0, 'dst': 3, 'condition': '-', 'callback': None},
-                {'src': 3, 'dst': 1, 'condition': None, 'callback': 'Factor', 'Finish': True})
+SignedFactor2 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Factor2', 'Finish': True,
+                  'name': 'SignedFactor2', 'pre': 'null', 'post': 'calc_sign'},
+                {'src': 0, 'dst': 2, 'condition': '+', 'callback': None, 'post': 'plast'},
+                {'src': 2, 'dst': 1, 'condition': None, 'callback': 'Factor', 'Finish': True, 'post': 'calc_sign'},
+                {'src': 0, 'dst': 3, 'condition': '-', 'callback': None, 'post': 'plast'},
+                {'src': 3, 'dst': 1, 'condition': None, 'callback': 'Factor', 'Finish': True, 'post': 'calc_sign'})
 
 
 Factor = ({'src': 0, 'dst': 1, 'condition': '(', 'callback': None, 'name': 'Factor'},
@@ -201,12 +203,12 @@ Factor = ({'src': 0, 'dst': 1, 'condition': '(', 'callback': None, 'name': 'Fact
           {'src': 2, 'dst': 3, 'condition': ')', 'callback': None, 'Finish': True},
           {'src': 0, 'dst': 4, 'condition': 'id', 'callback': None},
           {'src': 4, 'dst': 3, 'condition': None, 'callback': 'Fid3', 'Finish': True},
-          {'src': 0, 'dst': 3, 'condition': 'num', 'callback': None, 'Finish': True})
+          {'src': 0, 'dst': 3, 'condition': 'num', 'callback': None, 'Finish': True, 'post': 'pnum'})
 
 Factor2 = ({'src': 0, 'dst': 1, 'condition': '(', 'callback': None, 'name': 'Factor'},
           {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Expr'},
           {'src': 2, 'dst': 3, 'condition': ')', 'callback': None, 'Finish': True},
-          {'src': 0, 'dst': 3, 'condition': 'num', 'callback': None, 'Finish': True})
+          {'src': 0, 'dst': 3, 'condition': 'num', 'callback': None, 'Finish': True, 'post': 'pnum'})
 
 Fid3 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid', 'name': 'Fid3', 'Finish': True},
           {'src': 0, 'dst': 2, 'condition': '(', 'callback': None},
