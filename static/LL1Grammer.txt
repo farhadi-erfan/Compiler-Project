@@ -56,14 +56,14 @@ Statement -> ExpressionStmt
             |ReturnStmt
             |SwitchStmt .
 
-ExpressionStmt -> Expression ;
+ExpressionStmt -> Expression #pop_1;
                  |continue ;
-                 |break ;
+                 |break #break_;
                  |; .
 
-SelectionStmt -> if ( Expression ) Statement else Statement .
+SelectionStmt -> if ( Expression ) #save Statement #save_jpf else Statement #jp .
 
-IterationStmt -> while ( Expression ) Statement .
+IterationStmt -> while ( Expression ) #save Statement #breaks_jpf_jp .
 
 ReturnStmt -> return Freturn .
 

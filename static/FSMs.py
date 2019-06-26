@@ -72,27 +72,27 @@ Stmt = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'ExpStmt', 'Finish':
         {'src': 0, 'dst': 1, 'condition': None, 'callback': 'RetStmt', 'Finish': True},
         {'src': 0, 'dst': 1, 'condition': None, 'callback': 'SwitchStmt', 'Finish': True})
 
-ExpStmt = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Expr', 'name': 'ExpStmt'},
+ExpStmt = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Expr', 'post': 'pop_1', 'name': 'ExpStmt'},
            {'src': 1, 'dst': 2, 'condition': ';', 'callback': None, 'Finish': True},
            {'src': 0, 'dst': 3, 'condition': 'continue', 'callback': None},
            {'src': 3, 'dst': 2, 'condition': ';', 'callback': None, 'Finish': True},
-           {'src': 0, 'dst': 4, 'condition': 'break', 'callback': 'SL'},
+           {'src': 0, 'dst': 4, 'condition': 'break', 'callback': 'SL', 'post': 'break_'},
            {'src': 4, 'dst': 2, 'condition': ';', 'callback': None, 'Finish': True},
            {'src': 0, 'dst': 2, 'condition': ';', 'callback': None, 'Finish': True})
 
 SelStmt = ({'src': 0, 'dst': 1, 'condition': 'if', 'callback': None, 'name': 'SelStmt'},
            {'src': 1, 'dst': 2, 'condition': '(', 'callback': None},
            {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Expr'},
-           {'src': 3, 'dst': 4, 'condition': ')', 'callback': None},
-           {'src': 4, 'dst': 5, 'condition': None, 'callback': 'Stmt'},
+           {'src': 3, 'dst': 4, 'condition': ')', 'callback': None, 'post': 'save'},
+           {'src': 4, 'dst': 5, 'condition': None, 'callback': 'Stmt', 'post': 'save_jpf'},
            {'src': 5, 'dst': 6, 'condition': 'else', 'callback': None},
-           {'src': 6, 'dst': 7, 'condition': None, 'callback': 'Stmt', 'Finish': True})
+           {'src': 6, 'dst': 7, 'condition': None, 'callback': 'Stmt', 'post': 'jp', 'Finish': True})
 
 IterStmt = ({'src': 0, 'dst': 1, 'condition': 'while', 'callback': None, 'name': 'IterStmt'},
             {'src': 1, 'dst': 2, 'condition': '(', 'callback': None},
             {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Expr'},
-            {'src': 3, 'dst': 4, 'condition': ')', 'callback': None},
-            {'src': 4, 'dst': 5, 'condition': None, 'callback': 'Stmt', 'Finish': True})
+            {'src': 3, 'dst': 4, 'condition': ')', 'callback': None, 'post': 'save'},
+            {'src': 4, 'dst': 5, 'condition': None, 'callback': 'Stmt', 'Finish': True, 'post': 'breaks_jpf_jp'})
 
 RetStmt = ({'src': 0, 'dst': 1, 'condition': 'return', 'callback': None, 'name': 'RetStmt'},
            {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Fret', 'Finish': True})

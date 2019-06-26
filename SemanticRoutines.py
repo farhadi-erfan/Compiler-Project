@@ -10,11 +10,9 @@ class SemanticRoutines:
 
     @staticmethod
     def assign_expr(cg, token=None):
-        dest = cg.ss.get_from_top(1)
         cg.pb[cg.index] = '(ASSIGN, {}, {})'.format(cg.ss.top(), cg.ss.get_from_top(1))
         cg.index += 4
-        cg.ss.pop(2)
-        cg.ss.push('{}'.format(dest))
+        cg.ss.pop(1)
 
     @staticmethod
     def assign(cg, addr_from, addr_to):
@@ -160,3 +158,46 @@ class SemanticRoutines:
         elif relop == '<':
             SemanticRoutines.lt(cg, lhs, rhs, t)
         cg.ss.push(t)
+
+    @staticmethod
+    def save(cg, token=None):
+        cg.ss.push(cg.index)
+        cg.index += 4
+
+    @staticmethod
+    def save_jpf(cg, token=None):
+        tos = 0
+        if cg.ss.get_from_top(1) == ('break' or 'continue'):
+            tos = 2
+        cg.pb[cg.ss.get_from_top(tos)] = '(JPF, {}, {}, )'.format(cg.ss.get_from_top(tos + 1), str(cg.index + 4))
+        if tos > 0:
+            save_1, save_2 = cg.ss.get_from_top(0), cg.ss.get_from_top(1)
+            cg.ss.pop(4)
+            cg.ss.push(save_2), cg.ss.push(save_1)
+        else: cg.ss.pop(2)
+        cg.ss.push(cg.index)
+        print(cg.index)
+        cg.index += 4
+
+    @staticmethod
+    def jp(cg, token=None):
+        cg.pb[cg.ss.top()] = '(JP, {}, , )'.format(str(cg.index))
+        cg.ss.pop(1)
+
+    @staticmethod
+    def pop_1(cg, token=None):
+        cg.ss.pop(1)
+
+    @staticmethod
+    def break_(cg, token=None):
+        cg.ss.push('break')
+        SemanticRoutines.save(cg)
+
+    @staticmethod
+    def breaks_jpf_jp(cg, token=None):
+        while cg.ss.get_from_top(1) == 'break':
+            cg.pb[cg.ss.top()] = '(JP, {}, , )'.format(str(cg.index + 4))
+            cg.ss.pop(2)
+        cg.pb[cg.ss.top()] = '(JPF, {}, {}, )'.format(cg.ss.get_from_top(1), str(cg.index + 4))
+        cg.pb[cg.index] = '(JP, {}, , )'.format(str(cg.ss.top()))
+        cg.ss.pop(2)
