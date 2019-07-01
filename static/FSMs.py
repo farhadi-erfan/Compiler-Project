@@ -74,7 +74,7 @@ Stmt = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'ExpStmt', 'Finish':
 
 ExpStmt = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Expr', 'post': 'pop_1', 'name': 'ExpStmt'},
            {'src': 1, 'dst': 2, 'condition': ';', 'callback': None, 'Finish': True},
-           {'src': 0, 'dst': 3, 'condition': 'continue', 'callback': None},
+           {'src': 0, 'dst': 3, 'condition': 'continue', 'callback': None, 'post': 'continue_'},
            {'src': 3, 'dst': 2, 'condition': ';', 'callback': None, 'Finish': True},
            {'src': 0, 'dst': 4, 'condition': 'break', 'callback': 'SL', 'post': 'break_'},
            {'src': 4, 'dst': 2, 'condition': ';', 'callback': None, 'Finish': True},
@@ -88,7 +88,7 @@ SelStmt = ({'src': 0, 'dst': 1, 'condition': 'if', 'callback': None, 'name': 'Se
            {'src': 5, 'dst': 6, 'condition': 'else', 'callback': None},
            {'src': 6, 'dst': 7, 'condition': None, 'callback': 'Stmt', 'post': 'jp', 'Finish': True})
 
-IterStmt = ({'src': 0, 'dst': 1, 'condition': 'while', 'callback': None, 'name': 'IterStmt'},
+IterStmt = ({'src': 0, 'dst': 1, 'condition': 'while', 'callback': None, 'name': 'IterStmt', 'post': 'plast'},
             {'src': 1, 'dst': 2, 'condition': '(', 'callback': None},
             {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Expr'},
             {'src': 3, 'dst': 4, 'condition': ')', 'callback': None, 'post': 'save'},

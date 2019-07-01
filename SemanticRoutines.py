@@ -190,6 +190,8 @@ class SemanticRoutines:
 
     @staticmethod
     def break_(cg, token=None):
+        if 'while' not in cg.ss.stack and 'switch' not in cg.ss.stack:
+            raise Exception('‫‪No‬‬ ‫’‪’while‬‬ ‫‪or‬‬ ‫’‪’switch‬‬ ‫‪found‬‬ ‫‪for‬‬ ‫‪’break’.‬‬')
         cg.ss.push('break')
         SemanticRoutines.save(cg)
 
@@ -200,4 +202,11 @@ class SemanticRoutines:
             cg.ss.pop(2)
         cg.pb[cg.ss.top()] = '(JPF, {}, {}, )'.format(cg.ss.get_from_top(1), str(cg.index + 4))
         cg.pb[cg.index] = '(JP, {}, , )'.format(str(cg.ss.top()))
-        cg.ss.pop(2)
+        cg.ss.pop(3)
+
+    @staticmethod
+    def continue_(cg, token=None):
+        if 'while' not in cg.ss.stack not in cg.ss.stack:
+            raise Exception('‫‪No‬‬ ‫’‪’while‬‬ ‫‪found‬‬ ‫‪for‬‬‪‪ ’‫‪continue’.‬‬')
+        cg.pb[cg.index] = '(JP, {}, , )'.format(str(cg.ss.top()))
+        cg.index += 4
