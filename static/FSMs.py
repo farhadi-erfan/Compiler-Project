@@ -107,10 +107,10 @@ SwitchStmt = ({'src': 0, 'dst': 1, 'condition': 'switch', 'callback': None, 'nam
               {'src': 3, 'dst': 4, 'condition': ')', 'callback': None},
               {'src': 4, 'dst': 5, 'condition': '{', 'callback': None},
               {'src': 5, 'dst': 6, 'condition': None, 'callback': 'CaseStmts'},
-              {'src': 6, 'dst': 7, 'condition': None, 'callback': 'DefaultStmt'},
+              {'src': 6, 'dst': 7, 'condition': None, 'callback': 'DefaultStmt', 'post': 'jp'},
               {'src': 7, 'dst': 8, 'condition': '}', 'callback': None, 'Finish': True})
 
-CaseStmts = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'CaseStmts_1', 'name': 'CaseStmts',
+CaseStmts = ({'src': 0, 'pre': 'null', 'dst': 1, 'condition': None, 'callback': 'CaseStmts_1', 'name': 'CaseStmts',
               'Finish': True}, None)
 
 CaseStmts_1 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'CaseStmt', 'name': 'CaseStmts_1'},
@@ -118,9 +118,9 @@ CaseStmts_1 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'CaseStmt', '
                {'src': 0, 'dst': 2, 'condition': '', 'callback': None, 'Finish': True})
 
 CaseStmt = ({'src': 0, 'dst': 1, 'condition': 'case', 'callback': None, 'name': 'CaseStmt'},
-            {'src': 1, 'dst': 2, 'condition': 'num', 'callback': None},
+            {'src': 1, 'dst': 2, 'condition': 'num', 'callback': None, 'post': 'eq_save'},
             {'src': 2, 'dst': 3, 'condition': ':', 'callback': None},
-            {'src': 3, 'dst': 4, 'condition': None, 'callback': 'SL', 'Finish': True})
+            {'src': 3, 'dst': 4, 'condition': None, 'callback': 'SL', 'Finish': True, 'post': 'jp_save_jpf'})
 
 DefaultStmt = ({'src': 0, 'dst': 1, 'condition': 'default', 'callback': None, 'name': 'DefaultStmt'},
                {'src': 1, 'dst': 2, 'condition': ':', 'callback': None},

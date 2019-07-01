@@ -26,6 +26,9 @@ class SemanticRoutines:
 
         if identifier_token == ';':
             # paddr
+            if cg.ss.get_from_top(2) == 'void':
+                raise Exception("‫‪Illegal‬‬ ‫‪type‬‬ ‫‪of‬‬ ‫‪void.‬‬")
+
             cg.symbol_table.push({
                 'token': cg.ss.get_from_top(1),
                 'type': cg.ss.get_from_top(2),
@@ -210,3 +213,28 @@ class SemanticRoutines:
             raise Exception('‫‪No‬‬ ‫’‪’while‬‬ ‫‪found‬‬ ‫‪for‬‬‪‪ ’‫‪continue’.‬‬')
         cg.pb[cg.index] = '(JP, {}, , )'.format(str(cg.ss.top()))
         cg.index += 4
+
+    @staticmethod
+    def eq_save(cg, token=None):
+        t = SemanticRoutines.get_temp(cg)
+        if cg.ss.top() == 'NaK':
+            cg.pb[cg.index] = '(EQ, #{}, {}, {})'.format(str(token), cg.ss.get_from_top(1), t)
+
+        else:
+            cg.pb[cg.index] = '(EQ, #{}, {}, {})'.format(str(token), cg.ss.get_from_top(1), t)
+            a = cg.ss.top()
+            cg.ss.pop(2)
+            cg.ss.push(a)
+        cg.ss.push(t)
+        cg.ss.push(cg.index + 4)
+        cg.index += 8
+
+    @staticmethod
+    def jp_save_jpf(cg, token=None):
+        if cg.ss.get_from_top(2) == 'NaK':
+            cg.pb[cg.ss.top()] = '(JPF, {}, {}, )'.format(cg.ss.get_from_top(1), str(cg.index + 4))
+        else:
+            cg.pb[cg.ss.get_from_top(2)] = '(JP, {}, , )'.format(str(cg.index))
+            cg.pb[cg.ss.top()] = '(JPF, {}, {}, )'.format(cg.ss.get_from_top(1), str(cg.index + 4))
+        cg.ss.pop(3)
+        SemanticRoutines.save(cg, token)

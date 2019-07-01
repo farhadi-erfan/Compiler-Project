@@ -71,14 +71,14 @@ Freturn ->
 ;
           |Expression ; .
 
-SwitchStmt -> switch ( Expression ) cropen CaseStmts DefaultStmt crclose .
+SwitchStmt -> switch ( Expression ) cropen CaseStmts DefaultStmt #jp crclose .
 
-CaseStmts -> CaseStmts_1 .
+CaseStmts -> #null CaseStmts_1 .
 
 CaseStmts_1 -> CaseStmt CaseStmts_1
               |.
 
-CaseStmt -> case num : StatementList .
+CaseStmt -> case num #eq_save: StatementList #jp_save_jpf .
 
 DefaultStmt -> default : StatementList
               |.
