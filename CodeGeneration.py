@@ -3,7 +3,7 @@ from utils.Stack import Stack
 
 class CodeGenerator:
     def __init__(self):
-        self.index = 1
+        self.index = 2
         self.ss = Stack()
         self.symbol_table = Stack()
         self.scope_stack = Stack()

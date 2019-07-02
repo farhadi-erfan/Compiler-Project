@@ -19,54 +19,55 @@ class SemanticRoutines:
     def assign(cg, addr_from, addr_to):
         cg.pb[cg.index] = '(ASSIGN, {}, {}, )'.format(addr_from, addr_to)
         cg.index += 1
-        cg.index += 1
 
     @staticmethod
     def vardec(cg, token=None):
-        identifier_token = cg.ss.top()
+        if len(cg.ss.stack) > 0:
+            identifier_token = cg.ss.top()
 
-        if identifier_token == ';':
-            # paddr
-            if cg.ss.get_from_top(2) == 'void':
-                raise Exception("‫‪Illegal‬‬ ‫‪type‬‬ ‫‪of‬‬ ‫‪void.‬‬")
+            if identifier_token == ';':
+                # paddr
+                if cg.ss.get_from_top(2) == 'void':
+                    raise Exception("‫‪Illegal‬‬ ‫‪type‬‬ ‫‪of‬‬ ‫‪void.‬‬")
 
-            cg.symbol_table.push({
-                'token': cg.ss.get_from_top(1),
-                'type': cg.ss.get_from_top(2),
-                'addr': cg.data_index
-            })
-            cg.data_index += 4
-            cg.ss.pop(3)
+                cg.symbol_table.push({
+                    'token': cg.ss.get_from_top(1),
+                    'type': cg.ss.get_from_top(2),
+                    'addr': cg.data_index
+                })
+                cg.data_index += 4
+                cg.ss.pop(3)
 
-        elif identifier_token == ']':
+            elif identifier_token == ']':
 
-            if cg.ss.get_from_top(3) == 'void':
-                raise Exception("‫‪Illegal‬‬ ‫‪type‬‬ ‫‪of‬‬ ‫‪void.‬‬")
+                if cg.ss.get_from_top(3) == 'void':
+                    raise Exception("‫‪Illegal‬‬ ‫‪type‬‬ ‫‪of‬‬ ‫‪void.‬‬")
 
-            arr_size = cg.ss.get_from_top(1)
-            cg.symbol_table.push({
-                'token': cg.ss.get_from_top(2),
-                'type': cg.ss.get_from_top(3),
-                'addr': cg.data_index,
-                'ref': True,
-                'size': arr_size
-            })
-            SemanticRoutines.assign(cg, '#{}'.format(cg.data_index + 4), '{}'.format(cg.data_index))
-            cg.data_index += 4 * (int(arr_size) + 1)
-            cg.ss.pop(4)
+                arr_size = cg.ss.get_from_top(1)
+                cg.symbol_table.push({
+                    'token': cg.ss.get_from_top(2),
+                    'type': cg.ss.get_from_top(3),
+                    'addr': cg.data_index,
+                    'ref': True,
+                    'size': arr_size
+                })
+                SemanticRoutines.assign(cg, '#{}'.format(cg.data_index + 4), '{}'.format(cg.data_index))
+                cg.data_index += 4 * (int(arr_size) + 1)
+                cg.ss.pop(4)
 
     @staticmethod
     def fundec(cg, token=None):
+        is_nested = cg.scope_stack.top()[1] != None
         cg.symbol_table.push({
             'token': cg.ss.top(),
             'type': cg.ss.get_from_top(1),
             'addr': cg.index,
             'is_func': True,
+            'is_nested': is_nested,
             'args': [],
             'jmp_position': cg.jmp_position_index,
             'result_addr': cg.return_values_index
         })
-        is_nested = cg.scope_stack.top()[1] != None
         SemanticRoutines.new_scope(cg, func=cg.ss.top())
         cg.return_values_index += 4
         cg.jmp_position_index += 4
@@ -75,7 +76,7 @@ class SemanticRoutines:
         if is_nested:
             cg.ss.push(cg.index)
             cg.ss.push('jmp_before')
-            cg.index += 4
+            cg.index += 1
         cg.ss.push(fun_name)
 
     @staticmethod
@@ -108,7 +109,7 @@ class SemanticRoutines:
 
     @staticmethod
     def sub(cg, s1, s2, d):
-        cg.pb[cg.index] = '(ADD, {}, {}, {})'.format(s1, s2, d)
+        cg.pb[cg.index] = '(SUB, {}, {}, {})'.format(s1, s2, d)
         cg.index += 1
 
     @staticmethod
@@ -280,7 +281,7 @@ class SemanticRoutines:
             cg.pb[cg.ss.top()] = '(JP, {}, , )'.format(str(cg.index + 1))
             cg.ss.pop(2)
         cg.pb[cg.ss.top()] = '(JPF, {}, {}, )'.format(cg.ss.get_from_top(1), str(cg.index + 1))
-        cg.pb[cg.index] = '(JP, {}, , )'.format(str(cg.ss.top()))
+        cg.pb[cg.index] = '(JP, {}, , )'.format(str(cg.ss.top() - 1)) # todo - had to jump to condition
         cg.index += 1
         cg.ss.pop(3)
 
@@ -300,7 +301,7 @@ class SemanticRoutines:
             cg.pb[cg.index] = '(EQ, #{}, {}, {})'.format(str(token), cg.ss.get_from_top(1), t)
         cg.ss.push(t)
         cg.ss.push(cg.index + 1)
-        cg.index += 8
+        cg.index += 2
 
     @staticmethod
     def jp_save_jpf(cg, token=None):
@@ -361,6 +362,7 @@ class SemanticRoutines:
 
     @staticmethod
     def func_return(cg, token=None):
+        cg.ss.pop()
         func = cg.scope_stack.top()[1]
         for symcell in cg.symbol_table.stack:
             if symcell['token'] == func and symcell.get('is_func', False):
@@ -396,6 +398,8 @@ class SemanticRoutines:
                         raise Exception('Mismatch in numbers of arguments of ’{}’.'.format(func))
                     cg.pb[cg.index] = '(ASSIGN, #{}, {}, )'.format(cg.index + 2, symcell['jmp_position'])
                     cg.index += 1
+                    if symcell['is_nested']:
+                        func_addr += 1
                     cg.pb[cg.index] = '(JP, {}, , )'.format(func_addr)
                     cg.index += 1
                     cg.current_arg = 0
@@ -412,7 +416,8 @@ class SemanticRoutines:
     def set_main(cg, token=None):
         for symcell in cg.symbol_table.stack:
             if symcell['token'] == 'main' and symcell['type'] == 'void' and len(symcell['args']) == 0:
-                cg.pb[0] = '(JP, {}, , )'.format(symcell['addr'])
+                cg.pb[0] = '(ASSIGN, {}, {}, )'.format(cg.index, symcell['jmp_position'])
+                cg.pb[1] = '(JP, {}, , )'.format(symcell['addr'])
                 return
         raise Exception('main function not found!')
 
@@ -440,10 +445,11 @@ class SemanticRoutines:
 
     @staticmethod
     def if_nested(cg, token=None):
-        if cg.ss.get_from_top(1) == 'jmp_before':
-            i = cg.ss.get_from_top(2)
-            cg.ss.pop(3)
-            cg.pb[i] = '(JP, {}, , )'.format(cg.index)
+        if len(cg.ss.stack) > 0:
+            if cg.ss.top() == 'jmp_before':
+                i = cg.ss.get_from_top(1)
+                cg.ss.pop(2)
+                cg.pb[i] = '(JP, {}, , )'.format(cg.index)
 
     @staticmethod
     def index_error(cg, token=None):
