@@ -351,12 +351,23 @@ class SemanticRoutines:
         raise Exception('could not find function')
 
     @staticmethod
+    def void_ret(cg, token=None):
+        func = cg.scope_stack.top()[1]
+        for symcell in cg.symbol_table.stack:
+            if symcell['token'] == func and symcell.get('is_func', False):
+                if symcell['type'] == 'int':
+                    raise Exception("Returning without value for int function: {}".format(func))
+        raise Exception('could not find function')
+
+    @staticmethod
     def set_result(cg, token=None):
-        func = cg.ss.get_from_top(1)
+        func = cg.scope_stack.top()[1]
         for symcell in cg.symbol_table.stack:
             if symcell['token'] == func and symcell.get('is_func', False):
                 result_addr = symcell['result_addr']
                 result = cg.ss.top()
+                if symcell['type'] == 'void':
+                    raise Exception("Return value for void function: {}".format(func))
                 cg.pb[cg.index] = '(ASSIGN, {}, {}, )'.format(result, result_addr)
                 cg.index += 1
                 cg.ss.pop()
@@ -365,7 +376,7 @@ class SemanticRoutines:
 
     @staticmethod
     def func_return(cg, token=None):
-        cg.ss.pop()
+        # cg.ss.pop()
         func = cg.scope_stack.top()[1]
         for symcell in cg.symbol_table.stack:
             if symcell['token'] == func and symcell.get('is_func', False):
