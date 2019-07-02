@@ -93,7 +93,7 @@ FExpr_1 -> eq #rhs Expression #assign_expr
           | Term_1 AdditiveExpression_1 FAdditiveExpression .
 
 Fid ->
-      |bropen Expression brclose .
+      |bropen Expression #index_error brclose .
 
 SimpleExpression -> AdditiveExpression FAdditiveExpression .
 

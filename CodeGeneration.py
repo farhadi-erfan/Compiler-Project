@@ -21,7 +21,7 @@ class CodeGenerator:
         for symcell in self.symbol_table.stack:
             if symcell['token'] == label:
                 if self.in_rhs and symcell['type'] == 'void':
-                    raise Exception('Type mismatch in operands.')
+                    raise Exception('using return value of void function: {}.'.format(label))
                 return symcell['addr']
         raise Exception("’{}’ is not defined.".format(label))
 
@@ -41,7 +41,10 @@ class CodeGenerator:
 
     def execute(self, func, token):
         key = token[2] if (token[0] == 'id' or token[0] == 'num') else token[0]
-        func(self, key)
+        try:
+            func(self, key)
+        except Exception as e:
+            self.semantic_errors += ['#{}:\t{}\n'.format(str(token[1]), str(e))]
         self.print_pb()
 
     def print_pb(self):
@@ -56,4 +59,9 @@ class CodeGenerator:
             if not addr:
                 continue
             if addr == address or addr == int(address):
+                return x
+
+    def get_dict_by_token(self, token):
+        for x in self.symbol_table.stack:
+            if x['token'] == token:
                 return x

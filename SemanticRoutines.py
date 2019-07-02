@@ -293,12 +293,8 @@ class SemanticRoutines:
         t = SemanticRoutines.get_temp(cg)
         if cg.ss.top() == 'NaK':
             cg.pb[cg.index] = '(EQ, #{}, {}, {})'.format(str(token), cg.ss.get_from_top(1), t)
-
         else:
             cg.pb[cg.index] = '(EQ, #{}, {}, {})'.format(str(token), cg.ss.get_from_top(1), t)
-            a = cg.ss.top()
-            cg.ss.pop(2)
-            cg.ss.push(a)
         cg.ss.push(t)
         cg.ss.push(cg.index + 4)
         cg.index += 8
@@ -428,3 +424,14 @@ class SemanticRoutines:
         while len(cg.symbol_table.stack) > cg.scope_stack.top():
             cg.symbol_table.pop()
         cg.scope_stack.pop()
+
+    @staticmethod
+    def index_error(cg, token=None):
+        if '#' in cg.ss.top():
+            dict = cg.get_dict_by_token(cg.ss.get_from_top(1))
+            index = int(cg.ss.top().strip('#'))
+            ref = dict.get('ref', None)
+            if not ref:
+                raise Exception('int object is not subscriptable: {}'.format(cg.ss.get_from_top(1)))
+            if index >= int(dict['size']):
+                raise Exception('array index bigger than size: {}'.format(str(index)))

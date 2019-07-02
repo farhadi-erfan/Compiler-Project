@@ -149,7 +149,7 @@ FExpr1 = ({'src': 0, 'dst': 1, 'condition': '=', 'callback': None, 'name': 'FExp
           {'src': 6, 'dst': 7, 'condition': None, 'callback': 'FAdditiveExpr', 'Finish': True})
 
 Fid = ({'src': 0, 'dst': 1, 'condition': '[', 'callback': None, 'name': 'Fid'},
-       {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Expr'},
+       {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Expr', 'post': 'index_error'},
        {'src': 2, 'dst': 3, 'condition': ']', 'callback': None, 'Finish': True},
        {'src': 0, 'dst': 1, 'condition': '', 'callback': None, 'Finish': True})
 
