@@ -15,6 +15,7 @@ class CodeGenerator:
         self.return_values_index = 900
         self.current_arg = 0
         self.in_rhs = False
+        self.semantic_errors = []
 
     def get_address_by_token(self, label):
         for symcell in self.symbol_table.stack:
@@ -51,3 +52,11 @@ class CodeGenerator:
             if x != 0:
                 print(ind, x, sep='\t')
     print()
+
+    def get_dict_by_address(self, address):
+        for x in self.symbol_table.stack:
+            addr = x.get('addr', None)
+            if not addr:
+                continue
+            if addr == address or addr == int(address):
+                return x

@@ -131,6 +131,21 @@ class SemanticRoutines:
     def calc_mult(cg, token=None):
         val = cg.ss.top()
         s1 = cg.ss.get_from_top(1)
+        if '#' not in s1:
+            a = cg.get_dict_by_address(s1)
+            if a:
+                ref = a.get('ref', False)
+                is_func = a.get('is_func', False)
+                if ref or is_func:
+                    raise Exception('‫‪Type‬‬ ‫‪mismatch‬‬ ‫‪in‬‬ ‫‪operands.‬‬')
+        if '#' not in val:
+            a = cg.get_dict_by_address(s1)
+            if a:
+                ref = a.get('ref', False)
+                is_func = cg.symbol_table[a].get('is_func', False)
+                if ref or is_func:
+                    raise Exception('‫‪Type‬‬ ‫‪mismatch‬‬ ‫‪in‬‬ ‫‪operands.‬‬')
+
         cg.ss.pop(2)
         t2 = SemanticRoutines.get_temp(cg)
         SemanticRoutines.mult(cg, val, s1, t2)
@@ -140,6 +155,20 @@ class SemanticRoutines:
     def calc_addop(cg, token=None):
         val = cg.ss.top()
         dest = cg.ss.get_from_top(2)
+        if '#' not in dest:
+            a = cg.get_dict_by_address(dest)
+            if a:
+                ref = a.get('ref', False)
+                is_func = a.get('is_func', False)
+                if ref or is_func:
+                    raise Exception('‫‪Type‬‬ ‫‪mismatch‬‬ ‫‪in‬‬ ‫‪operands.‬‬')
+        if '#' not in val:
+            a = cg.get_dict_by_address(val)
+            if a:
+                ref = a.get('ref', False)
+                is_func = a.get('is_func', False)
+                if ref or is_func:
+                    raise Exception('‫‪Type‬‬ ‫‪mismatch‬‬ ‫‪in‬‬ ‫‪operands.‬‬')
         addop = cg.ss.get_from_top(1)
         cg.ss.pop(3)
         t2 = SemanticRoutines.get_temp(cg)
@@ -179,6 +208,20 @@ class SemanticRoutines:
         relop = cg.ss.get_from_top(1)
         lhs = cg.ss.get_from_top(2)
         rhs = cg.ss.top()
+        if '#' not in rhs:
+            a = cg.get_dict_by_address(rhs)
+            if a:
+                ref = a.get('ref', False)
+                is_func = a.get('is_func', False)
+                if ref or is_func:
+                    raise Exception('‫‪Type‬‬ ‫‪mismatch‬‬ ‫‪in‬‬ ‫‪operands.‬‬')
+        if '#' not in lhs:
+            a = cg.get_dict_by_address(lhs)
+            if a:
+                ref = a.get('ref', False)
+                is_func = a.get('is_func', False)
+                if ref or is_func:
+                    raise Exception('‫‪Type‬‬ ‫‪mismatch‬‬ ‫‪in‬‬ ‫‪operands.‬‬')
         cg.ss.pop(3)
         t = SemanticRoutines.get_temp(cg)
         if relop == '==':

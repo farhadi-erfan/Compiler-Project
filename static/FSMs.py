@@ -212,7 +212,8 @@ Factor2 = ({'src': 0, 'dst': 1, 'condition': '(', 'callback': None, 'name': 'Fac
           {'src': 2, 'dst': 3, 'condition': ')', 'callback': None, 'Finish': True},
           {'src': 0, 'dst': 3, 'condition': 'num', 'callback': None, 'Finish': True, 'post': 'pnum'})
 
-Fid3 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid', 'name': 'Fid3', 'Finish': True},
+Fid3 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid', 'name': 'Fid3', 'Finish': True,
+         'post': 'calc_addr'},
           {'src': 0, 'dst': 2, 'condition': '(', 'callback': None},
           {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Args'},
           {'src': 3, 'dst': 4, 'condition': ')', 'callback': None, 'Finish': True, 'post': 'func_jmp'})
