@@ -390,16 +390,18 @@ class SemanticRoutines:
                         raise Exception('Mismatch in numbers of arguments of ’{}’.'.format(func))
                     cg.pb[cg.index] = '(ASSIGN, #{}, {}, )'.format(cg.index + 8, symcell['jmp_position'])
                     cg.index += 4
-                    t = SemanticRoutines.get_temp(cg)
-                    cg.pb[cg.index] = '(ASSIGN, {}, {}, )'.format(symcell['result_addr'], t)
+                    cg.pb[cg.index] = '(JP, {}, , )'.format(func_addr)
                     cg.index += 4
+                    cg.current_arg = 0
+                    t = SemanticRoutines.get_temp(cg)
+                    if symcell['type'] == 'int':
+                        cg.pb[cg.index] = '(ASSIGN, {}, {}, )'.format(symcell['result_addr'], t)
+                        cg.index += 4
                     cg.ss.push(t)
                     break
-            cg.pb[cg.index] = '(JP, {}, , )'.format(func_addr)
-            cg.index += 4
-            cg.current_arg = 0
         else:
             SemanticRoutines.null(cg, token)
+
     @staticmethod
     def set_main(cg, token=None):
         for symcell in cg.symbol_table.stack:

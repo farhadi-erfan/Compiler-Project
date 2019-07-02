@@ -23,7 +23,7 @@ class CodeGenerator:
                 if self.in_rhs and symcell['type'] == 'void':
                     raise Exception('using return value of void function: {}.'.format(label))
                 return symcell['addr']
-        raise Exception("’{}’ is not defined.".format(label))
+        raise Exception("\'{}\' is not defined.".format(label))
 
     def get_arg_address_by_token_and_num(self, func, num):
         for symcell in self.symbol_table.stack:
@@ -31,8 +31,8 @@ class CodeGenerator:
                 if num < len(symcell['args']):
                     return symcell['args'][num]
                 else:
-                    raise Exception('Mismatch in numbers of arguments of ’{}’.'.format(func))
-        raise Exception("’{}’ is not defined.".format(func))
+                    raise Exception('Mismatch in numbers of arguments of \'{}\'.'.format(func))
+        raise Exception("\'{}\' is not defined.".format(func))
 
     def get_temp(self):
         res = self.temp_index
