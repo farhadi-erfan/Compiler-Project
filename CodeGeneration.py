@@ -41,10 +41,7 @@ class CodeGenerator:
 
     def execute(self, func, token):
         key = token[2] if (token[0] == 'id' or token[0] == 'num') else token[0]
-        try:
-            func(self, key)
-        except Exception as e:
-            self.semantic_errors += ['#{}: {}\n'.format(str(token[1]), str(e))]
+        func(self, key)
         self.print_pb()
 
     def print_pb(self):
