@@ -10,7 +10,7 @@ Declaration -> TypeSpecifier #plast FTypeSpecifier_2 .
 FTypeSpecifier_2 -> id #plast Fid_4 #vardec.
 
 Fid_4 -> Fid_1
-        |( Params ) #plast CompoundStmt .
+        |( #fundec Params ) CompoundStmt .
 
 VarDeclaration -> TypeSpecifier FTypeSpecifier .
 
@@ -24,23 +24,23 @@ TypeSpecifier -> void
 
 FunDeclaration -> TypeSpecifier id ( Params ) CompoundStmt .
 
-Params -> int FTypeSpecifier_1 ParamList_1
+Params -> int #plast FTypeSpecifier_1 #param_dec ParamList_1
          |void FParam .
 
-FParam -> FTypeSpecifier_1 ParamList_1
+FParam -> FTypeSpecifier_1 #param_dec ParamList_1
          |.
 
 ParamList -> Param ParamList_1 .
 
-ParamList_1 -> comma Param ParamList_1
+ParamList_1 -> comma Param #param_dec ParamList_1
               |.
 
-Param -> TypeSpecifier FTypeSpecifier_1 .
+Param -> TypeSpecifier #plast FTypeSpecifier_1 .
 
-FTypeSpecifier_1 -> id Fid_2 .
+FTypeSpecifier_1 -> id #plast Fid_2 .
 
 Fid_2 ->
-        |bropen brclose .
+        |bropen brclose #plast .
 
 CompoundStmt -> cropen DeclarationList StatementList crclose .
 
@@ -65,11 +65,11 @@ SelectionStmt -> if ( Expression ) #save Statement #save_jpf else Statement #jp 
 
 IterationStmt -> while #plast ( Expression ) #save Statement #breaks_jpf_jp .
 
-ReturnStmt -> return Freturn .
+ReturnStmt -> return Freturn #func_return.
 
 Freturn ->
 ;
-          |Expression ; .
+          |Expression #set_result; .
 
 SwitchStmt -> switch ( Expression ) cropen CaseStmts DefaultStmt #jp crclose .
 
@@ -87,7 +87,7 @@ Expression -> id #plast FExpr
              |Term_2 AdditiveExpression_1 FAdditiveExpression .
 
 FExpr -> Fid #calc_addr FExpr_1
-        |( Args )  Term_1 AdditiveExpression_1 FAdditiveExpression . #TODO: function call
+        |( Args ) #func_jmp  Term_1 AdditiveExpression_1 FAdditiveExpression .
 
 FExpr_1 -> eq Expression #assign_expr
           | Term_1 AdditiveExpression_1 FAdditiveExpression .
@@ -127,21 +127,21 @@ SignedFactor_2 ->#null Factor_2 #calc_sign
                |minus #plast Factor #calc_sign.
 
 Factor -> ( Expression )
-         |id Fid_3
+         |id #plast Fid_3
          |num #pnum .
 
 Factor_2 -> ( Expression )
          |num #pnum.
 
 Fid_3 -> Fid
-        |( Args ) .
+        |( Args ) #func_jmp .
 
 Call -> id ( Args ) .
 
 Args -> ArgList
        |.
 
-ArgList -> Expression ArgList_1 .
+ArgList -> Expression #arg ArgList_1 .
 
-ArgList_1 -> comma Expression ArgList_1
+ArgList_1 -> comma Expression #arg ArgList_1
             |.

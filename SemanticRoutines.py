@@ -49,8 +49,25 @@ class SemanticRoutines:
             cg.data_index += 4 * (int(arr_size) + 1)
             cg.ss.pop(4)
 
-        elif identifier_token == ')':
-            pass    # TODO: function dec
+    @staticmethod
+    def fundec(cg, token=None):
+        cg.symbol_table.push({
+            'token': cg.ss.top(),
+            'type': cg.ss.get_from_top(1),
+            'addr': cg.index,
+            'is_func': True,
+            'args': [],
+            'jmp_position': None,
+            'result_addr': cg.return_values_index
+        })
+        cg.symbol_table.push({
+            'token': 'NaK',
+            'type': 'divider'
+        })
+        cg.return_values_index += 4
+        fun_name = cg.ss.top()
+        cg.ss.pop(2)
+        cg.ss.push(fun_name)
 
     @staticmethod
     def null(cg, token=None):
@@ -238,3 +255,77 @@ class SemanticRoutines:
             cg.pb[cg.ss.top()] = '(JPF, {}, {}, )'.format(cg.ss.get_from_top(1), str(cg.index + 4))
         cg.ss.pop(3)
         SemanticRoutines.save(cg, token)
+
+    @staticmethod
+    def param_dec(cg, token=None):
+        last_token = cg.ss.top()
+        if last_token == ']':
+            cg.symbol_table.push({
+                'token': cg.ss.get_from_top(1),
+                'type': cg.ss.get_from_top(2),
+                'addr': cg.arg_index,
+                'ref': True
+            })
+            cg.ss.pop(3)
+        else:
+            cg.symbol_table.push({
+                'token': cg.ss.top(),
+                'type': cg.ss.get_from_top(1),
+                'addr': cg.arg_index
+            })
+            cg.ss.pop(2)
+        cg.arg_index += 4
+        func = cg.ss.top()
+        for symcell in cg.symbol_table.stack:
+            if symcell['token'] == func and symcell.get('is_func', False):
+                symcell['args'] += [cg.arg_index - 4]
+                return
+        raise Exception('could not find function')
+
+    @staticmethod
+    def set_result(cg, token=None):
+        func = cg.ss.get_from_top(1)
+        for symcell in cg.symbol_table.stack:
+            if symcell['token'] == func and symcell.get('is_func', False):
+                result_addr = symcell['result_addr']
+                result = cg.ss.top()
+                cg.pb[cg.index] = '(ASSIGN, {}, {}, )'.format(result, result_addr)
+                cg.index += 4
+                cg.ss.pop()
+                return
+        raise Exception('could not find function')
+
+    @staticmethod
+    def func_return(cg, token=None):
+        # this should run too on every time function returns
+        while cg.symbol_table.top()['token'] != 'NaK':
+            cg.symbol_table.pop()
+        cg.symbol_table.pop()
+        cg.symbol_table.top()['jmp_position'] = cg.index
+        cg.pb[cg.index] = '(JP, , , )'
+        cg.index += 4
+
+    @staticmethod
+    def arg(cg, token=None):
+        arg_addr = cg.get_arg_address_by_token_and_num(cg.ss.get_from_top(1), cg.current_arg)
+        cg.pb[cg.index] = '(ASSIGN, {}, {}, )'.format(cg.ss.top(), arg_addr)
+        cg.index += 4
+        cg.ss.pop()
+        cg.current_arg += 1
+
+    @staticmethod
+    def func_jmp(cg, token=None):
+        func = cg.ss.top()
+        func_addr = cg.get_address_by_token(func)
+        cg.ss.pop()
+        cg.current_arg = 0
+        for symcell in cg.symbol_table.stack:
+            if symcell['token'] == func and symcell.get('is_func', False):
+                jmp_pos = symcell['jmp_position']
+                cg.pb[cg.index] = '(ASSIGN, #{}, {}, )'.format(cg.index + 8, jmp_pos + 1)
+                cg.pb[jmp_pos] = '(JP, {}, , )'.format(cg.index + 8)
+                cg.index += 4
+                cg.ss.push(symcell['result_addr'])
+                break
+        cg.pb[cg.index] = '(JP, {}, , )'.format(func_addr)
+        cg.index += 4

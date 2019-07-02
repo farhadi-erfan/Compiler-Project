@@ -15,7 +15,7 @@ FTS2 = ({'src': 0, 'dst': 1, 'condition': 'id', 'callback': None, 'name': 'FTS2'
         {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Fid4', 'Finish': True, 'post': 'vardec'})
 
 Fid4 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid1', 'Finish': True, 'name': 'Fid4'},
-        {'src': 0, 'dst': 2, 'condition': '(', 'callback': None},
+        {'src': 0, 'dst': 2, 'condition': '(', 'callback': None, 'post': 'fundec'},
         {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Params'},
         {'src': 3, 'dst': 4, 'condition': ')', 'callback': None},
         {'src': 4, 'dst': 2, 'condition': None, 'callback': 'CompStmt', 'Finish': True})
@@ -31,28 +31,28 @@ TS = ({'src': 0, 'dst': 1, 'condition': 'int', 'callback': None, 'name': 'TS', '
 
 Params = ({'src': 0, 'dst': 1, 'condition': 'void', 'callback': None, 'name': 'Params'},
           {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FParam', 'Finish': True},
-          {'src': 0, 'dst': 3, 'condition': 'int', 'callback': None},
-          {'src': 3, 'dst': 4, 'condition': None, 'callback': 'FTS1'},
+          {'src': 0, 'dst': 3, 'condition': 'int', 'callback': None, 'post': 'plast'},
+          {'src': 3, 'dst': 4, 'condition': None, 'callback': 'FTS1', 'post': 'param_dec'},
           {'src': 4, 'dst': 5, 'condition': None, 'callback': 'PL1', 'Finish': True})
 
-FParam = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'FTS1', 'name': 'FVoid'},
+FParam = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'FTS1', 'name': 'FParam', 'post': 'param_dec'},
          {'src': 1, 'dst': 2, 'condition': None, 'callback': 'PL1', 'Finish': True},
          {'src': 0, 'dst': 2, 'condition': '', 'callback': None, 'Finish': True})
 
 PL1 = ({'src': 0, 'dst': 1, 'condition': ',', 'callback': None, 'name': 'PL1'},
-       {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Param'},
+       {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Param', 'post': 'param_dec'},
        {'src': 2, 'dst': 3, 'condition': None, 'callback': 'PL1', 'Finish': True},
        {'src': 0, 'dst': 3, 'condition': '', 'callback': None, 'Finish': True})
 
-Param = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'TS', 'name': 'Param'},
+Param = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'TS', 'name': 'Param', 'post': 'plast'},
          {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FTS1', 'Finish': True})
 
-FTS1 = ({'src': 0, 'dst': 1, 'condition': 'id', 'callback': None, 'name': 'FTS1'},
+FTS1 = ({'src': 0, 'dst': 1, 'condition': 'id', 'callback': None, 'name': 'FTS1', 'post': 'plast'},
         {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Fid2', 'Finish': True})
 
 Fid2 = ({'src': 0, 'dst': 2, 'condition': '', 'callback': None, 'name': 'Fid2', 'Finish': True},
         {'src': 0, 'dst': 1, 'condition': '[', 'callback': None},
-        {'src': 1, 'dst': 2, 'condition': ']', 'callback': None, 'Finish': True})
+        {'src': 1, 'dst': 2, 'condition': ']', 'callback': None, 'Finish': True, 'post': 'plast'})
 
 CompStmt = ({'src': 0, 'dst': 1, 'condition': '{', 'callback': None, 'name': 'CompStmt'},
             {'src': 1, 'dst': 2, 'condition': None, 'callback': 'DL'},
@@ -95,10 +95,10 @@ IterStmt = ({'src': 0, 'dst': 1, 'condition': 'while', 'callback': None, 'name':
             {'src': 4, 'dst': 5, 'condition': None, 'callback': 'Stmt', 'Finish': True, 'post': 'breaks_jpf_jp'})
 
 RetStmt = ({'src': 0, 'dst': 1, 'condition': 'return', 'callback': None, 'name': 'RetStmt'},
-           {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Fret', 'Finish': True})
+           {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Fret', 'Finish': True, 'post': 'func_return'})
 
 Fret = ({'src': 0, 'dst': 2, 'condition': ';', 'callback': None, 'name': 'Fret', 'Finish': True},
-        {'src': 0, 'dst': 1, 'condition': None, 'callback': 'Expr'},
+        {'src': 0, 'dst': 1, 'condition': None, 'callback': 'Expr', 'post': 'set_result'},
         {'src': 1, 'dst': 2, 'condition': ';', 'callback': 'None', 'Finish': True})
 
 SwitchStmt = ({'src': 0, 'dst': 1, 'condition': 'switch', 'callback': None, 'name': 'SwitchStmt'},
@@ -137,7 +137,7 @@ FExpr = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid', 'name': 'FEx
          {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FExpr1', 'Finish': True},
          {'src': 0, 'dst': 2, 'condition': '(', 'callback': None},
          {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Args'},
-         {'src': 3, 'dst': 4, 'condition': ')', 'callback': None, 'Finish': True},
+         {'src': 3, 'dst': 4, 'condition': ')', 'callback': None, 'Finish': True, 'post': 'func_jmp'},
          {'src': 4, 'dst': 5, 'condition': None, 'callback': 'Term_1'},
          {'src': 5, 'dst': 6, 'condition': None, 'callback': 'AdditiveExpr_1'},
          {'src': 6, 'dst': 7, 'condition': None, 'callback': 'FAdditiveExpr', 'Finish': True})
@@ -203,7 +203,7 @@ SignedFactor2 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Factor2', 
 Factor = ({'src': 0, 'dst': 1, 'condition': '(', 'callback': None, 'name': 'Factor'},
           {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Expr'},
           {'src': 2, 'dst': 3, 'condition': ')', 'callback': None, 'Finish': True},
-          {'src': 0, 'dst': 4, 'condition': 'id', 'callback': None},
+          {'src': 0, 'dst': 4, 'condition': 'id', 'callback': None, 'post': 'plast'},
           {'src': 4, 'dst': 3, 'condition': None, 'callback': 'Fid3', 'Finish': True},
           {'src': 0, 'dst': 3, 'condition': 'num', 'callback': None, 'Finish': True, 'post': 'pnum'})
 
@@ -215,16 +215,16 @@ Factor2 = ({'src': 0, 'dst': 1, 'condition': '(', 'callback': None, 'name': 'Fac
 Fid3 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid', 'name': 'Fid3', 'Finish': True},
           {'src': 0, 'dst': 2, 'condition': '(', 'callback': None},
           {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Args'},
-          {'src': 3, 'dst': 4, 'condition': ')', 'callback': None, 'Finish': True})
+          {'src': 3, 'dst': 4, 'condition': ')', 'callback': None, 'Finish': True, 'post': 'func_jmp'})
 
 
 Args = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'ArgList', 'name': 'Args', 'Finish': True},
         {'src': 0, 'dst': 1, 'condition': '', 'callback': None, 'Finish': True})
 
-ArgList = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Expr', 'name': 'ArgList'},
+ArgList = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Expr', 'name': 'ArgList', 'post': 'arg'},
            {'src': 1, 'dst': 2, 'condition': None, 'callback': 'ArgList_1', 'Finish': True})
 
 ArgList_1 = ({'src': 0, 'dst': 1, 'condition': ',', 'callback': None, 'name': 'ArgList_1'},
-             {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Expr'},
+             {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Expr', 'post': 'arg'},
              {'src': 2, 'dst': 3, 'condition': None, 'callback': 'ArgList_1', 'Finish': True},
              {'src': 0, 'dst': 3, 'condition': '', 'callback': None, 'Finish': True})
