@@ -42,7 +42,7 @@ FTypeSpecifier_1 -> id #plast Fid_2 .
 Fid_2 ->
         |bropen brclose #plast .
 
-CompoundStmt -> cropen #new_scope DeclarationList StatementList #remove_scope crclose .
+CompoundStmt -> cropen #new_scope DeclarationList StatementList #remove_scope crclose #if_nested.
 
 StatementList -> StatementList_1 .
 

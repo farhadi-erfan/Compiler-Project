@@ -7,12 +7,13 @@ class CodeGenerator:
         self.ss = Stack()
         self.symbol_table = Stack()
         self.scope_stack = Stack()
-        self.pb = [0] * 1000
-        self.data_index = 100
-        self.temp_index = 500
-        self.jmp_position_index = 700
-        self.arg_index = 800
-        self.return_values_index = 900
+        self.scope_stack.push((0, None))
+        self.pb = [0] * 10000
+        self.data_index = 1000
+        self.temp_index = 5000
+        self.jmp_position_index = 7000
+        self.arg_index = 8000
+        self.return_values_index = 9000
         self.current_arg = 0
         self.in_rhs = False
         self.semantic_errors = []

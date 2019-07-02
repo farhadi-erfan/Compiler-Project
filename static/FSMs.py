@@ -57,7 +57,7 @@ Fid2 = ({'src': 0, 'dst': 2, 'condition': '', 'callback': None, 'name': 'Fid2', 
 CompStmt = ({'src': 0, 'dst': 1, 'condition': '{', 'callback': None, 'name': 'CompStmt', 'post': 'new_scope'},
             {'src': 1, 'dst': 2, 'condition': None, 'callback': 'DL'},
             {'src': 2, 'dst': 3, 'condition': None, 'callback': 'SL', 'post': 'remove_scope'},
-            {'src': 3, 'dst': 4, 'condition': '}', 'callback': None, 'Finish': True})
+            {'src': 3, 'dst': 4, 'condition': '}', 'callback': None, 'Finish': True, 'post': 'if_nested'})
 
 SL = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'SL1', 'name': 'SL', 'Finish': True}, None)
 

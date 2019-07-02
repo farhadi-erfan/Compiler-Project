@@ -66,11 +66,16 @@ class SemanticRoutines:
             'jmp_position': cg.jmp_position_index,
             'result_addr': cg.return_values_index
         })
+        is_nested = cg.scope_stack.top()[1] != None
         SemanticRoutines.new_scope(cg, func=cg.ss.top())
         cg.return_values_index += 4
         cg.jmp_position_index += 4
         fun_name = cg.ss.top()
         cg.ss.pop(2)
+        if is_nested:
+            cg.ss.push(cg.index)
+            cg.ss.push('jmp_before')
+            cg.index += 4
         cg.ss.push(fun_name)
 
     @staticmethod
@@ -421,19 +426,23 @@ class SemanticRoutines:
 
     @staticmethod
     def new_scope(cg, token=None, func=None):
-        if len(cg.scope_stack.stack) == 0:
-            cg.scope_stack.push((len(cg.symbol_table.stack), func))
+        if func == None:
+            cg.scope_stack.push((len(cg.symbol_table.stack), cg.scope_stack.stack[-1][1]))
         else:
-            if func == None:
-                cg.scope_stack.push((len(cg.symbol_table.stack), cg.scope_stack.stack[-1][1]))
-            else:
-                cg.scope_stack.push((len(cg.symbol_table.stack), func))
+            cg.scope_stack.push((len(cg.symbol_table.stack), func))
 
     @staticmethod
     def remove_scope(cg, token=None):
         while len(cg.symbol_table.stack) > cg.scope_stack.top()[0]:
             cg.symbol_table.pop()
         cg.scope_stack.pop()
+
+    @staticmethod
+    def if_nested(cg, token=None):
+        if cg.ss.get_from_top(1) == 'jmp_before':
+            i = cg.ss.get_from_top(2)
+            cg.ss.pop(3)
+            cg.pb[i] = '(JP, {}, , )'.format(cg.index)
 
     @staticmethod
     def index_error(cg, token=None):
