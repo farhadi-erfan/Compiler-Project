@@ -54,9 +54,9 @@ Fid2 = ({'src': 0, 'dst': 2, 'condition': '', 'callback': None, 'name': 'Fid2', 
         {'src': 0, 'dst': 1, 'condition': '[', 'callback': None},
         {'src': 1, 'dst': 2, 'condition': ']', 'callback': None, 'Finish': True, 'post': 'plast'})
 
-CompStmt = ({'src': 0, 'dst': 1, 'condition': '{', 'callback': None, 'name': 'CompStmt'},
+CompStmt = ({'src': 0, 'dst': 1, 'condition': '{', 'callback': None, 'name': 'CompStmt', 'post': 'new_scope'},
             {'src': 1, 'dst': 2, 'condition': None, 'callback': 'DL'},
-            {'src': 2, 'dst': 3, 'condition': None, 'callback': 'SL'},
+            {'src': 2, 'dst': 3, 'condition': None, 'callback': 'SL', 'post': 'remove_scope'},
             {'src': 3, 'dst': 4, 'condition': '}', 'callback': None, 'Finish': True})
 
 SL = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'SL1', 'name': 'SL', 'Finish': True}, None)
@@ -101,13 +101,13 @@ Fret = ({'src': 0, 'dst': 2, 'condition': ';', 'callback': None, 'name': 'Fret',
         {'src': 0, 'dst': 1, 'condition': None, 'callback': 'Expr', 'post': 'set_result'},
         {'src': 1, 'dst': 2, 'condition': ';', 'callback': 'None', 'Finish': True})
 
-SwitchStmt = ({'src': 0, 'dst': 1, 'condition': 'switch', 'callback': None, 'name': 'SwitchStmt'},
+SwitchStmt = ({'src': 0, 'dst': 1, 'condition': 'switch', 'callback': None, 'name': 'SwitchStmt', 'post': 'plast'},
               {'src': 1, 'dst': 2, 'condition': '(', 'callback': None},
               {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Expr'},
               {'src': 3, 'dst': 4, 'condition': ')', 'callback': None},
               {'src': 4, 'dst': 5, 'condition': '{', 'callback': None},
               {'src': 5, 'dst': 6, 'condition': None, 'callback': 'CaseStmts'},
-              {'src': 6, 'dst': 7, 'condition': None, 'callback': 'DefaultStmt', 'post': 'jp'},
+              {'src': 6, 'dst': 7, 'condition': None, 'callback': 'DefaultStmt', 'post': 'jp_finish'},
               {'src': 7, 'dst': 8, 'condition': '}', 'callback': None, 'Finish': True})
 
 CaseStmts = ({'src': 0, 'pre': 'null', 'dst': 1, 'condition': None, 'callback': 'CaseStmts_1', 'name': 'CaseStmts',
