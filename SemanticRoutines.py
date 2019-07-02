@@ -441,5 +441,8 @@ class SemanticRoutines:
             ref = dict.get('ref', None)
             if not ref:
                 raise Exception('int object is not subscriptable: {}'.format(cg.ss.get_from_top(1)))
-            if index >= int(dict['size']):
-                raise Exception('array index bigger than size: {}'.format(str(index)))
+            try:
+                if index >= int(dict['size']):
+                    raise Exception('array index bigger than size: {}'.format(str(index)))
+            except Exception as e:
+                pass
