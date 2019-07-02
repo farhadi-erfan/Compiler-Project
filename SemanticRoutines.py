@@ -194,7 +194,7 @@ class SemanticRoutines:
         cg.ss.pop(2)
         if sign == '-':
             t1 = SemanticRoutines.get_temp(cg)
-            SemanticRoutines.not_(cg, val, t1)
+            SemanticRoutines.sub(cg, '#0', val, t1)
             val = t1
         cg.ss.push(val)
 
