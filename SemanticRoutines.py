@@ -130,14 +130,14 @@ class SemanticRoutines:
     def calc_mult(cg, token=None):
         val = cg.ss.top()
         s1 = cg.ss.get_from_top(1)
-        if '#' not in s1:
+        if '#' not in s1 and '@' not in s1:
             a = cg.get_dict_by_address(s1)
             if a:
                 ref = a.get('ref', False)
                 is_func = a.get('is_func', False)
                 if ref or is_func:
                     raise Exception('‫‪Type‬‬ ‫‪mismatch‬‬ ‫‪in‬‬ ‫‪operands.‬‬')
-        if '#' not in val:
+        if '#' not in val and '@' not in val:
             a = cg.get_dict_by_address(s1)
             if a:
                 ref = a.get('ref', False)
@@ -154,14 +154,14 @@ class SemanticRoutines:
     def calc_addop(cg, token=None):
         val = cg.ss.top()
         dest = cg.ss.get_from_top(2)
-        if '#' not in dest:
+        if '#' not in dest and '@' not in dest:
             a = cg.get_dict_by_address(dest)
             if a:
                 ref = a.get('ref', False)
                 is_func = a.get('is_func', False)
                 if ref or is_func:
                     raise Exception('‫‪Type‬‬ ‫‪mismatch‬‬ ‫‪in‬‬ ‫‪operands.‬‬')
-        if '#' not in val:
+        if '#' not in val and '@' not in val:
             a = cg.get_dict_by_address(val)
             if a:
                 ref = a.get('ref', False)
@@ -207,14 +207,14 @@ class SemanticRoutines:
         relop = cg.ss.get_from_top(1)
         lhs = cg.ss.get_from_top(2)
         rhs = cg.ss.top()
-        if '#' not in rhs:
+        if '#' not in rhs and '@' not in rhs:
             a = cg.get_dict_by_address(rhs)
             if a:
                 ref = a.get('ref', False)
                 is_func = a.get('is_func', False)
                 if ref or is_func:
                     raise Exception('‫‪Type‬‬ ‫‪mismatch‬‬ ‫‪in‬‬ ‫‪operands.‬‬')
-        if '#' not in lhs:
+        if '#' not in lhs and '@' not in lhs:
             a = cg.get_dict_by_address(lhs)
             if a:
                 ref = a.get('ref', False)
@@ -370,6 +370,8 @@ class SemanticRoutines:
             cg.pb[cg.index] = '(PRINT, {}, , )'.format(cg.ss.top())
             cg.index += 4
             cg.ss.pop()
+
+
         else:
             arg_addr = cg.get_arg_address_by_token_and_num(cg.ss.get_from_top(1), cg.current_arg)
             cg.pb[cg.index] = '(ASSIGN, {}, {}, )'.format(cg.ss.top(), arg_addr)
@@ -397,7 +399,8 @@ class SemanticRoutines:
             cg.pb[cg.index] = '(JP, {}, , )'.format(func_addr)
             cg.index += 4
             cg.current_arg = 0
-
+        else:
+            SemanticRoutines.null(cg, token)
     @staticmethod
     def set_main(cg, token=None):
         for symcell in cg.symbol_table.stack:
