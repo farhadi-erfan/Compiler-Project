@@ -68,6 +68,9 @@ class SemanticRoutines:
             'jmp_position': cg.jmp_position_index,
             'result_addr': cg.return_values_index
         })
+        if cg.ss.top() == 'main':
+            cg.symbol_table.top()['main'] = cg.index
+            cg.index += 1
         SemanticRoutines.new_scope(cg, func=cg.ss.top())
         cg.return_values_index += 4
         cg.jmp_position_index += 4
@@ -416,8 +419,10 @@ class SemanticRoutines:
     def set_main(cg, token=None):
         for symcell in cg.symbol_table.stack:
             if symcell['token'] == 'main' and symcell['type'] == 'void' and len(symcell['args']) == 0:
-                cg.pb[0] = '(ASSIGN, {}, {}, )'.format(cg.index, symcell['jmp_position'])
-                cg.pb[1] = '(JP, {}, , )'.format(symcell['addr'])
+                # cg.pb[0] = '(ASSIGN, {}, {}, )'.format(cg.index, symcell['jmp_position'])
+                # cg.pb[1] = '(JP, {}, , )'.format(symcell['addr'])
+                cg.pb[symcell['main']] = '(ASSIGN, #{}, {}, )'.format(cg.index, symcell['jmp_position'])
+                cg.pb[0] = '(JP, {}, , )'.format(symcell['addr'])
                 return
         raise Exception('main function not found!')
 
