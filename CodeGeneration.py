@@ -3,7 +3,7 @@ from utils.Stack import Stack
 
 class CodeGenerator:
     def __init__(self):
-        self.index = 4
+        self.index = 1
         self.ss = Stack()
         self.symbol_table = Stack()
         self.scope_stack = Stack()
@@ -66,3 +66,10 @@ class CodeGenerator:
         for x in self.symbol_table.stack:
             if x['token'] == token:
                 return x
+
+    def output_pb(self):
+        with open('in_out/' + 'output', 'w+') as f:
+            for ind, x in enumerate(self.pb):
+                if x != 0:
+                    l = '{}\t{}\n'.format((str(ind)), x)
+                    f.write(l)

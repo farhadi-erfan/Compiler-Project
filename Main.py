@@ -88,3 +88,4 @@ except Exception as e:
     report()
     print(e.traceback())
 report()
+cg.output_pb()

@@ -11,15 +11,15 @@ class SemanticRoutines:
     @staticmethod
     def assign_expr(cg, token=None):
         cg.pb[cg.index] = '(ASSIGN, {}, {}, )'.format(cg.ss.top(), cg.ss.get_from_top(1))
-        cg.index += 4
+        cg.index += 1
         cg.ss.pop(1)
         cg.in_rhs = False
 
     @staticmethod
     def assign(cg, addr_from, addr_to):
         cg.pb[cg.index] = '(ASSIGN, {}, {}, )'.format(addr_from, addr_to)
-        cg.index += 4
-        cg.index += 4
+        cg.index += 1
+        cg.index += 1
 
     @staticmethod
     def vardec(cg, token=None):
@@ -94,22 +94,22 @@ class SemanticRoutines:
     @staticmethod
     def add(cg, s1, s2, d):
         cg.pb[cg.index] = '(ADD, {}, {}, {})'.format(s1, s2, d)
-        cg.index += 4
+        cg.index += 1
 
     @staticmethod
     def not_(cg, s, d):
         cg.pb[cg.index] = '(NOT, {}, {}, )'.format(s, d)
-        cg.index += 4
+        cg.index += 1
 
     @staticmethod
     def mult(cg, s1, s2, d):
         cg.pb[cg.index] = '(MULT, {}, {}, {})'.format(s1, s2, d)
-        cg.index += 4
+        cg.index += 1
 
     @staticmethod
     def sub(cg, s1, s2, d):
         cg.pb[cg.index] = '(ADD, {}, {}, {})'.format(s1, s2, d)
-        cg.index += 4
+        cg.index += 1
 
     @staticmethod
     def calc_addr(cg, token=None):
@@ -140,10 +140,10 @@ class SemanticRoutines:
                 if ref or is_func:
                     raise Exception('‫‪Type‬‬ ‫‪mismatch‬‬ ‫‪in‬‬ ‫‪operands.‬‬')
         if '#' not in val and '@' not in val:
-            a = cg.get_dict_by_address(s1)
+            a = cg.get_dict_by_address(val)
             if a:
                 ref = a.get('ref', False)
-                is_func = cg.symbol_table[a].get('is_func', False)
+                is_func = a.get('is_func', False)
                 if ref or is_func:
                     raise Exception('‫‪Type‬‬ ‫‪mismatch‬‬ ‫‪in‬‬ ‫‪operands.‬‬')
 
@@ -197,12 +197,12 @@ class SemanticRoutines:
     @staticmethod
     def lt(cg, s1, s2, d):
         cg.pb[cg.index] = '(LT, {}, {}, {})'.format(s1, s2, d)
-        cg.index += 4
+        cg.index += 1
 
     @staticmethod
     def eq(cg, s1, s2, d):
         cg.pb[cg.index] = '(EQ, {}, {}, {})'.format(s1, s2, d)
-        cg.index += 4
+        cg.index += 1
 
     @staticmethod
     def calc_relop(cg, token=None):
@@ -234,14 +234,14 @@ class SemanticRoutines:
     @staticmethod
     def save(cg, token=None):
         cg.ss.push(cg.index)
-        cg.index += 4
+        cg.index += 1
 
     @staticmethod
     def save_jpf(cg, token=None):
         tos = 0
         if cg.ss.get_from_top(1) == ('break' or 'continue'):
             tos = 2
-        cg.pb[cg.ss.get_from_top(tos)] = '(JPF, {}, {}, )'.format(cg.ss.get_from_top(tos + 1), str(cg.index + 4))
+        cg.pb[cg.ss.get_from_top(tos)] = '(JPF, {}, {}, )'.format(cg.ss.get_from_top(tos + 1), str(cg.index + 1))
         if tos > 0:
             save_1, save_2 = cg.ss.get_from_top(0), cg.ss.get_from_top(1)
             cg.ss.pop(4)
@@ -250,7 +250,7 @@ class SemanticRoutines:
             cg.ss.pop(2)
         cg.ss.push(cg.index)
         print(cg.index)
-        cg.index += 4
+        cg.index += 1
 
     @staticmethod
     def jp(cg, token=None):
@@ -277,11 +277,11 @@ class SemanticRoutines:
     @staticmethod
     def breaks_jpf_jp(cg, token=None):
         while cg.ss.get_from_top(1) == 'break':
-            cg.pb[cg.ss.top()] = '(JP, {}, , )'.format(str(cg.index + 4))
+            cg.pb[cg.ss.top()] = '(JP, {}, , )'.format(str(cg.index + 1))
             cg.ss.pop(2)
-        cg.pb[cg.ss.top()] = '(JPF, {}, {}, )'.format(cg.ss.get_from_top(1), str(cg.index + 4))
+        cg.pb[cg.ss.top()] = '(JPF, {}, {}, )'.format(cg.ss.get_from_top(1), str(cg.index + 1))
         cg.pb[cg.index] = '(JP, {}, , )'.format(str(cg.ss.top()))
-        cg.index += 4
+        cg.index += 1
         cg.ss.pop(3)
 
     @staticmethod
@@ -289,7 +289,7 @@ class SemanticRoutines:
         if 'while' not in cg.ss.stack not in cg.ss.stack:
             raise Exception('‫‪No‬‬ ‫’‪’while‬‬ ‫‪found‬‬ ‫‪for‬‬‪‪ ’‫‪continue’.‬‬')
         cg.pb[cg.index] = '(JP, {}, , )'.format(str(cg.ss.top()))
-        cg.index += 4
+        cg.index += 1
 
     @staticmethod
     def eq_save(cg, token=None):
@@ -299,16 +299,16 @@ class SemanticRoutines:
         else:
             cg.pb[cg.index] = '(EQ, #{}, {}, {})'.format(str(token), cg.ss.get_from_top(1), t)
         cg.ss.push(t)
-        cg.ss.push(cg.index + 4)
+        cg.ss.push(cg.index + 1)
         cg.index += 8
 
     @staticmethod
     def jp_save_jpf(cg, token=None):
         if cg.ss.get_from_top(2) == 'NaK':
-            cg.pb[cg.ss.top()] = '(JPF, {}, {}, )'.format(cg.ss.get_from_top(1), str(cg.index + 4))
+            cg.pb[cg.ss.top()] = '(JPF, {}, {}, )'.format(cg.ss.get_from_top(1), str(cg.index + 1))
         else:
             cg.pb[cg.ss.get_from_top(2)] = '(JP, {}, , )'.format(str(cg.index))
-            cg.pb[cg.ss.top()] = '(JPF, {}, {}, )'.format(cg.ss.get_from_top(1), str(cg.index + 4))
+            cg.pb[cg.ss.top()] = '(JPF, {}, {}, )'.format(cg.ss.get_from_top(1), str(cg.index + 1))
         cg.ss.pop(3)
         SemanticRoutines.save(cg, token)
 
@@ -354,7 +354,7 @@ class SemanticRoutines:
                 result_addr = symcell['result_addr']
                 result = cg.ss.top()
                 cg.pb[cg.index] = '(ASSIGN, {}, {}, )'.format(result, result_addr)
-                cg.index += 4
+                cg.index += 1
                 cg.ss.pop()
                 return
         raise Exception('could not find function')
@@ -365,7 +365,7 @@ class SemanticRoutines:
         for symcell in cg.symbol_table.stack:
             if symcell['token'] == func and symcell.get('is_func', False):
                 cg.pb[cg.index] = '(JP, @{}, , )'.format(symcell['jmp_position'])
-                cg.index += 4
+                cg.index += 1
                 return
         raise Exception('could not find function')
 
@@ -373,14 +373,14 @@ class SemanticRoutines:
     def arg(cg, token=None):
         if cg.ss.get_from_top(1) == 'output':
             cg.pb[cg.index] = '(PRINT, {}, , )'.format(cg.ss.top())
-            cg.index += 4
+            cg.index += 1
             cg.ss.pop()
 
 
         else:
             arg_addr = cg.get_arg_address_by_token_and_num(cg.ss.get_from_top(1), cg.current_arg)
             cg.pb[cg.index] = '(ASSIGN, {}, {}, )'.format(cg.ss.top(), arg_addr)
-            cg.index += 4
+            cg.index += 1
             cg.ss.pop()
             cg.current_arg += 1
 
@@ -394,15 +394,15 @@ class SemanticRoutines:
                 if symcell['token'] == func and symcell.get('is_func', False):
                     if cg.current_arg != len(symcell['args']):
                         raise Exception('Mismatch in numbers of arguments of ’{}’.'.format(func))
-                    cg.pb[cg.index] = '(ASSIGN, #{}, {}, )'.format(cg.index + 8, symcell['jmp_position'])
-                    cg.index += 4
+                    cg.pb[cg.index] = '(ASSIGN, #{}, {}, )'.format(cg.index + 2, symcell['jmp_position'])
+                    cg.index += 1
                     cg.pb[cg.index] = '(JP, {}, , )'.format(func_addr)
-                    cg.index += 4
+                    cg.index += 1
                     cg.current_arg = 0
                     t = SemanticRoutines.get_temp(cg)
                     if symcell['type'] == 'int':
                         cg.pb[cg.index] = '(ASSIGN, {}, {}, )'.format(symcell['result_addr'], t)
-                        cg.index += 4
+                        cg.index += 1
                     cg.ss.push(t)
                     break
         else:
@@ -423,7 +423,7 @@ class SemanticRoutines:
     @staticmethod
     def jp_finish(cg, token=None):
         cg.pb[cg.ss.top()] = '(JP, {}, , )'.format(str(cg.index))
-        cg.ss.pop(2)
+        cg.ss.pop(3)
 
     @staticmethod
     def new_scope(cg, token=None, func=None):
