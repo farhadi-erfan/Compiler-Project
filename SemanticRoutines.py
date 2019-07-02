@@ -38,6 +38,10 @@ class SemanticRoutines:
             cg.ss.pop(3)
 
         elif identifier_token == ']':
+
+            if cg.ss.get_from_top(3) == 'void':
+                raise Exception("‫‪Illegal‬‬ ‫‪type‬‬ ‫‪of‬‬ ‫‪void.‬‬")
+
             cg.symbol_table.push({
                 'token': cg.ss.get_from_top(2),
                 'type': cg.ss.get_from_top(3),
@@ -57,7 +61,7 @@ class SemanticRoutines:
             'addr': cg.index,
             'is_func': True,
             'args': [],
-            'jmp_position': None,
+            'jmp_position': cg.jmp_position_index,
             'result_addr': cg.return_values_index
         })
         cg.symbol_table.push({
@@ -65,13 +69,14 @@ class SemanticRoutines:
             'type': 'divider'
         })
         cg.return_values_index += 4
+        cg.jmp_position_index += 4
         fun_name = cg.ss.top()
         cg.ss.pop(2)
         cg.ss.push(fun_name)
 
     @staticmethod
     def null(cg, token=None):
-        cg.ss.push('NaK') # not an important key
+        cg.ss.push('NaK')  # not an important key
 
     @staticmethod
     def paddr(cg, id):
@@ -194,7 +199,8 @@ class SemanticRoutines:
             save_1, save_2 = cg.ss.get_from_top(0), cg.ss.get_from_top(1)
             cg.ss.pop(4)
             cg.ss.push(save_2), cg.ss.push(save_1)
-        else: cg.ss.pop(2)
+        else:
+            cg.ss.pop(2)
         cg.ss.push(cg.index)
         print(cg.index)
         cg.index += 4
@@ -260,6 +266,10 @@ class SemanticRoutines:
     def param_dec(cg, token=None):
         last_token = cg.ss.top()
         if last_token == ']':
+
+            if cg.ss.get_from_top(2) == 'void':
+                raise Exception("‫‪Illegal‬‬ ‫‪type‬‬ ‫‪of‬‬ ‫‪void.‬‬")
+
             cg.symbol_table.push({
                 'token': cg.ss.get_from_top(1),
                 'type': cg.ss.get_from_top(2),
@@ -268,6 +278,10 @@ class SemanticRoutines:
             })
             cg.ss.pop(3)
         else:
+
+            if cg.ss.get_from_top(1) == 'void':
+                raise Exception("‫‪Illegal‬‬ ‫‪type‬‬ ‫‪of‬‬ ‫‪void.‬‬")
+
             cg.symbol_table.push({
                 'token': cg.ss.top(),
                 'type': cg.ss.get_from_top(1),
@@ -297,35 +311,47 @@ class SemanticRoutines:
 
     @staticmethod
     def func_return(cg, token=None):
-        # this should run too on every time function returns
         while cg.symbol_table.top()['token'] != 'NaK':
             cg.symbol_table.pop()
         cg.symbol_table.pop()
-        cg.symbol_table.top()['jmp_position'] = cg.index
-        cg.pb[cg.index] = '(JP, , , )'
+        cg.pb[cg.index] = '(JP, @{}, , )'.format(cg.symbol_table.top()['jmp_position'])
         cg.index += 4
 
     @staticmethod
     def arg(cg, token=None):
-        arg_addr = cg.get_arg_address_by_token_and_num(cg.ss.get_from_top(1), cg.current_arg)
-        cg.pb[cg.index] = '(ASSIGN, {}, {}, )'.format(cg.ss.top(), arg_addr)
-        cg.index += 4
-        cg.ss.pop()
-        cg.current_arg += 1
+        if cg.ss.get_from_top(1) == 'output':
+            cg.pb[cg.index] = '(PRINT, {}, , )'.format(cg.ss.top())
+            cg.index += 4
+            cg.ss.pop()
+        else:
+            arg_addr = cg.get_arg_address_by_token_and_num(cg.ss.get_from_top(1), cg.current_arg)
+            cg.pb[cg.index] = '(ASSIGN, {}, {}, )'.format(cg.ss.top(), arg_addr)
+            cg.index += 4
+            cg.ss.pop()
+            cg.current_arg += 1
 
     @staticmethod
     def func_jmp(cg, token=None):
         func = cg.ss.top()
-        func_addr = cg.get_address_by_token(func)
         cg.ss.pop()
-        cg.current_arg = 0
+        if func != 'output':
+            func_addr = cg.get_address_by_token(func)
+            for symcell in cg.symbol_table.stack:
+                if symcell['token'] == func and symcell.get('is_func', False):
+                    if cg.current_arg != len(symcell['args']):
+                        raise Exception('Mismatch in numbers of arguments of ’{}’.'.format(func))
+                    cg.pb[cg.index] = '(ASSIGN, #{}, {}, )'.format(cg.index + 8, symcell['jmp_position'])
+                    cg.index += 4
+                    cg.ss.push(symcell['result_addr'])
+                    break
+            cg.pb[cg.index] = '(JP, {}, , )'.format(func_addr)
+            cg.index += 4
+            cg.current_arg = 0
+
+    @staticmethod
+    def set_main(cg, token=None):
         for symcell in cg.symbol_table.stack:
-            if symcell['token'] == func and symcell.get('is_func', False):
-                jmp_pos = symcell['jmp_position']
-                cg.pb[cg.index] = '(ASSIGN, #{}, {}, )'.format(cg.index + 8, jmp_pos + 1)
-                cg.pb[jmp_pos] = '(JP, {}, , )'.format(cg.index + 8)
-                cg.index += 4
-                cg.ss.push(symcell['result_addr'])
-                break
-        cg.pb[cg.index] = '(JP, {}, , )'.format(func_addr)
-        cg.index += 4
+            if symcell['token'] == 'main' and symcell['type'] == 'void' and len(symcell['args']) == 0:
+                cg.pb[0] = '(JP, {}, , )'.format(symcell['addr'])
+                return
+        raise Exception('main function not found!')

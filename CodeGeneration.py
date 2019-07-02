@@ -3,13 +3,14 @@ from utils.Stack import Stack
 
 class CodeGenerator:
     def __init__(self):
-        self.index = 0
+        self.index = 4
         self.ss = Stack()
         self.symbol_table = Stack()
         self.scope_stack = Stack()
         self.pb = [0] * 1000
         self.data_index = 100
         self.temp_index = 500
+        self.jmp_position_index = 700
         self.arg_index = 800
         self.return_values_index = 900
         self.current_arg = 0
@@ -18,13 +19,16 @@ class CodeGenerator:
         for symcell in self.symbol_table.stack:
             if symcell['token'] == label:
                 return symcell['addr']
-        raise Exception("label not found!")
+        raise Exception("’{}’ is not defined.".format(label))
 
     def get_arg_address_by_token_and_num(self, func, num):
         for symcell in self.symbol_table.stack:
             if symcell['token'] == func and symcell.get('is_func', False):
-                return symcell['args'][num]
-        raise Exception("label not found!")
+                if num < len(symcell['args']):
+                    return symcell['args'][num]
+                else:
+                    raise Exception('Mismatch in numbers of arguments of ’{}’.'.format(func))
+        raise Exception("’{}’ is not defined.".format(func))
 
     def get_temp(self):
         res = self.temp_index

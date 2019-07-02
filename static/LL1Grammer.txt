@@ -1,4 +1,4 @@
-Program -> DeclarationList eof .
+Program -> DeclarationList eof #set_main .
 
 DeclarationList -> DeclarationList_1 .
 
@@ -25,10 +25,10 @@ TypeSpecifier -> void
 FunDeclaration -> TypeSpecifier id ( Params ) CompoundStmt .
 
 Params -> int #plast FTypeSpecifier_1 #param_dec ParamList_1
-         |void FParam .
+         |void #plast FParam .
 
 FParam -> FTypeSpecifier_1 #param_dec ParamList_1
-         |.
+         |#pop_1.
 
 ParamList -> Param ParamList_1 .
 

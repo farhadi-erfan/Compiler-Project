@@ -1,6 +1,6 @@
 #  {'src':, 'dst':, 'condition':, 'callback': }
 PROGRAM = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'DL', 'name': 'Program'},
-           {'src': 1, 'dst': 2, 'condition': 'EOF', 'callback': None, 'Finish': True})
+           {'src': 1, 'dst': 2, 'condition': 'EOF', 'callback': None, 'Finish': True, 'post': 'set_main'})
 
 DL = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'DL1', 'Finish': True, 'name': 'DL'}, None)
 
@@ -29,7 +29,7 @@ Fid1 = ({'src': 0, 'dst': 1, 'condition': ';', 'callback': None, 'Finish': True,
 TS = ({'src': 0, 'dst': 1, 'condition': 'int', 'callback': None, 'name': 'TS', 'Finish': True},
       {'src': 0, 'dst': 2, 'condition': 'void', 'callback': None, 'Finish': True})
 
-Params = ({'src': 0, 'dst': 1, 'condition': 'void', 'callback': None, 'name': 'Params'},
+Params = ({'src': 0, 'dst': 1, 'condition': 'void', 'callback': None, 'name': 'Params', 'post': 'plast'},
           {'src': 1, 'dst': 2, 'condition': None, 'callback': 'FParam', 'Finish': True},
           {'src': 0, 'dst': 3, 'condition': 'int', 'callback': None, 'post': 'plast'},
           {'src': 3, 'dst': 4, 'condition': None, 'callback': 'FTS1', 'post': 'param_dec'},
@@ -37,7 +37,7 @@ Params = ({'src': 0, 'dst': 1, 'condition': 'void', 'callback': None, 'name': 'P
 
 FParam = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'FTS1', 'name': 'FParam', 'post': 'param_dec'},
          {'src': 1, 'dst': 2, 'condition': None, 'callback': 'PL1', 'Finish': True},
-         {'src': 0, 'dst': 2, 'condition': '', 'callback': None, 'Finish': True})
+         {'src': 0, 'dst': 2, 'condition': '', 'callback': None, 'Finish': True, 'post': 'pop_1'})
 
 PL1 = ({'src': 0, 'dst': 1, 'condition': ',', 'callback': None, 'name': 'PL1'},
        {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Param', 'post': 'param_dec'},
