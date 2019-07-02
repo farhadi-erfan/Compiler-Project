@@ -10,7 +10,7 @@ Declaration -> TypeSpecifier #plast FTypeSpecifier_2 .
 FTypeSpecifier_2 -> id #plast Fid_4 #vardec.
 
 Fid_4 -> Fid_1
-        |( #fundec Params ) CompoundStmt .
+        |( #fundec Params ) CompoundStmt #remove_scope.
 
 VarDeclaration -> TypeSpecifier FTypeSpecifier .
 

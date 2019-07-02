@@ -66,10 +66,7 @@ class SemanticRoutines:
             'jmp_position': cg.jmp_position_index,
             'result_addr': cg.return_values_index
         })
-        cg.symbol_table.push({
-            'token': 'NaK',
-            'type': 'divider'
-        })
+        SemanticRoutines.new_scope(cg, func=cg.ss.top())
         cg.return_values_index += 4
         cg.jmp_position_index += 4
         fun_name = cg.ss.top()
@@ -358,11 +355,13 @@ class SemanticRoutines:
 
     @staticmethod
     def func_return(cg, token=None):
-        while cg.symbol_table.top()['token'] != 'NaK':
-            cg.symbol_table.pop()
-        cg.symbol_table.pop()
-        cg.pb[cg.index] = '(JP, @{}, , )'.format(cg.symbol_table.top()['jmp_position'])
-        cg.index += 4
+        func = cg.scope_stack.top()[1]
+        for symcell in cg.symbol_table.stack:
+            if symcell['token'] == func and symcell.get('is_func', False):
+                cg.pb[cg.index] = '(JP, @{}, , )'.format(symcell['jmp_position'])
+                cg.index += 4
+                return
+        raise Exception('could not find function')
 
     @staticmethod
     def arg(cg, token=None):
@@ -419,12 +418,18 @@ class SemanticRoutines:
         cg.ss.pop(2)
 
     @staticmethod
-    def new_scope(cg, token=None):
-        cg.scope_stack.push(cg.symbol_table.stack.__len__())
+    def new_scope(cg, token=None, func=None):
+        if len(cg.scope_stack.stack) == 0:
+            cg.scope_stack.push((len(cg.symbol_table.stack), func))
+        else:
+            if func == None:
+                cg.scope_stack.push((len(cg.symbol_table.stack), cg.scope_stack.stack[-1][1]))
+            else:
+                cg.scope_stack.push((len(cg.symbol_table.stack), func))
 
     @staticmethod
     def remove_scope(cg, token=None):
-        while len(cg.symbol_table.stack) > cg.scope_stack.top():
+        while len(cg.symbol_table.stack) > cg.scope_stack.top()[0]:
             cg.symbol_table.pop()
         cg.scope_stack.pop()
 
