@@ -25,3 +25,9 @@ class Stack:
 
     def __repr__(self):
         return str(self.stack)
+
+    def get_index(self, key):
+        for i in range(len(self.stack)):
+            if self.stack[i] == key:
+                return i
+        return -1

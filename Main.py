@@ -13,6 +13,8 @@ def report():
             errors_file.write('\n')
         for i in LL1Parser.parse_errors:
             errors_file.write(i)
+        for i in LL1Parser.cg.semantic_errors:
+            errors_file.write(i)
 
     with open('in_out/' + 'scanner.txt', 'w+') as tokens_file:
         for i in la.tokens.keys():
