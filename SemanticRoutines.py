@@ -276,6 +276,7 @@ class SemanticRoutines:
             cg.ss.pop(2)
         cg.pb[cg.ss.top()] = '(JPF, {}, {}, )'.format(cg.ss.get_from_top(1), str(cg.index + 4))
         cg.pb[cg.index] = '(JP, {}, , )'.format(str(cg.ss.top()))
+        cg.index += 4
         cg.ss.pop(3)
 
     @staticmethod
