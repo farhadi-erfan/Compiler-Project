@@ -18,7 +18,7 @@ Fid4 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid1', 'Finish': Tr
         {'src': 0, 'dst': 2, 'condition': '(', 'callback': None, 'post': 'fundec'},
         {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Params'},
         {'src': 3, 'dst': 4, 'condition': ')', 'callback': None},
-        {'src': 4, 'dst': 2, 'condition': None, 'callback': 'CompStmt', 'Finish': True})
+        {'src': 4, 'dst': 2, 'condition': None, 'callback': 'CompStmt', 'Finish': True, 'post': 'remove_scope'})
 
 Fid1 = ({'src': 0, 'dst': 1, 'condition': ';', 'callback': None, 'Finish': True, 'name': 'Fid1', 'post': 'plast'},
         {'src': 0, 'dst': 2, 'condition': '[', 'callback': None},
