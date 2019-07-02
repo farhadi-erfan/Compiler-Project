@@ -42,7 +42,7 @@ FTypeSpecifier_1 -> id #plast Fid_2 .
 Fid_2 ->
         |bropen brclose #plast .
 
-CompoundStmt -> cropen DeclarationList StatementList crclose .
+CompoundStmt -> cropen #new_scope DeclarationList StatementList #remove_scope crclose .
 
 StatementList -> StatementList_1 .
 
@@ -71,7 +71,7 @@ Freturn ->
 ;
           |Expression #set_result; .
 
-SwitchStmt -> switch ( Expression ) cropen CaseStmts DefaultStmt #jp crclose .
+SwitchStmt -> switch #plast ( Expression ) cropen CaseStmts DefaultStmt #jp_finish crclose .
 
 CaseStmts -> #null CaseStmts_1 .
 

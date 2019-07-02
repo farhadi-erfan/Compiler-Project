@@ -43,14 +43,15 @@ class SemanticRoutines:
             if cg.ss.get_from_top(3) == 'void':
                 raise Exception("‫‪Illegal‬‬ ‫‪type‬‬ ‫‪of‬‬ ‫‪void.‬‬")
 
+            arr_size = cg.ss.get_from_top(1)
             cg.symbol_table.push({
                 'token': cg.ss.get_from_top(2),
                 'type': cg.ss.get_from_top(3),
                 'addr': cg.data_index,
-                'ref': True
+                'ref': True,
+                'size': arr_size
             })
             SemanticRoutines.assign(cg, '#{}'.format(cg.data_index + 4), '{}'.format(cg.data_index))
-            arr_size = cg.ss.get_from_top(1)
             cg.data_index += 4 * (int(arr_size) + 1)
             cg.ss.pop(4)
 
@@ -262,6 +263,12 @@ class SemanticRoutines:
     def break_(cg, token=None):
         if 'while' not in cg.ss.stack and 'switch' not in cg.ss.stack:
             raise Exception('‫‪No‬‬ ‫’‪’while‬‬ ‫‪or‬‬ ‫’‪’switch‬‬ ‫‪found‬‬ ‫‪for‬‬ ‫‪’break’.‬‬')
+        if 'switch' in cg.ss.stack and 'while' not in cg.ss.stack:
+            return
+        if 'switch' in cg.ss.stack and 'while' in cg.ss.stack:
+            if cg.ss.get_index('switch') > 0 and cg.ss.get_index('while') > 0:
+                if cg.ss.get_index('switch') > cg.ss.get_index('while'):
+                    return
         cg.ss.push('break')
         SemanticRoutines.save(cg)
 
@@ -406,3 +413,18 @@ class SemanticRoutines:
     @staticmethod
     def rhs(cg, token=None):
         cg.in_rhs = True
+
+    @staticmethod
+    def jp_finish(cg, token=None):
+        cg.pb[cg.ss.top()] = '(JP, {}, , )'.format(str(cg.index))
+        cg.ss.pop(2)
+
+    @staticmethod
+    def new_scope(cg, token=None):
+        cg.scope_stack.push(cg.symbol_table.stack.__len__())
+
+    @staticmethod
+    def remove_scope(cg, token=None):
+        while len(cg.symbol_table.stack) > cg.scope_stack.top():
+            cg.symbol_table.pop()
+        cg.scope_stack.pop()
