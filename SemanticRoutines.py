@@ -10,13 +10,14 @@ class SemanticRoutines:
 
     @staticmethod
     def assign_expr(cg, token=None):
-        cg.pb[cg.index] = '(ASSIGN, {}, {})'.format(cg.ss.top(), cg.ss.get_from_top(1))
+        cg.pb[cg.index] = '(ASSIGN, {}, {}, )'.format(cg.ss.top(), cg.ss.get_from_top(1))
         cg.index += 4
         cg.ss.pop(1)
+        cg.in_rhs = False
 
     @staticmethod
     def assign(cg, addr_from, addr_to):
-        cg.pb[cg.index] = '(ASSIGN, {}, {})'.format(addr_from, addr_to)
+        cg.pb[cg.index] = '(ASSIGN, {}, {}, )'.format(addr_from, addr_to)
         cg.index += 4
         cg.index += 4
 
@@ -94,7 +95,7 @@ class SemanticRoutines:
 
     @staticmethod
     def not_(cg, s, d):
-        cg.pb[cg.index] = '(NOT, {}, {})'.format(s, d)
+        cg.pb[cg.index] = '(NOT, {}, {}, )'.format(s, d)
         cg.index += 4
 
     @staticmethod
@@ -342,7 +343,10 @@ class SemanticRoutines:
                         raise Exception('Mismatch in numbers of arguments of ’{}’.'.format(func))
                     cg.pb[cg.index] = '(ASSIGN, #{}, {}, )'.format(cg.index + 8, symcell['jmp_position'])
                     cg.index += 4
-                    cg.ss.push(symcell['result_addr'])
+                    t = SemanticRoutines.get_temp(cg)
+                    cg.pb[cg.index] = '(ASSIGN, {}, {}, )'.format(symcell['result_addr'], t)
+                    cg.index += 4
+                    cg.ss.push(t)
                     break
             cg.pb[cg.index] = '(JP, {}, , )'.format(func_addr)
             cg.index += 4
@@ -355,3 +359,7 @@ class SemanticRoutines:
                 cg.pb[0] = '(JP, {}, , )'.format(symcell['addr'])
                 return
         raise Exception('main function not found!')
+
+    @staticmethod
+    def rhs(cg, token=None):
+        cg.in_rhs = True

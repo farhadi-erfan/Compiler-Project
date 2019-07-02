@@ -14,10 +14,13 @@ class CodeGenerator:
         self.arg_index = 800
         self.return_values_index = 900
         self.current_arg = 0
+        self.in_rhs = False
 
     def get_address_by_token(self, label):
         for symcell in self.symbol_table.stack:
             if symcell['token'] == label:
+                if self.in_rhs and symcell['type'] == 'void':
+                    raise Exception('Type mismatch in operands.')
                 return symcell['addr']
         raise Exception("’{}’ is not defined.".format(label))
 

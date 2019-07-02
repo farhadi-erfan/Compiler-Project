@@ -89,7 +89,7 @@ Expression -> id #plast FExpr
 FExpr -> Fid #calc_addr FExpr_1
         |( Args ) #func_jmp  Term_1 AdditiveExpression_1 FAdditiveExpression .
 
-FExpr_1 -> eq Expression #assign_expr
+FExpr_1 -> eq #rhs Expression #assign_expr
           | Term_1 AdditiveExpression_1 FAdditiveExpression .
 
 Fid ->
