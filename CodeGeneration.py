@@ -68,7 +68,7 @@ class CodeGenerator:
                 return x
 
     def output_pb(self):
-        with open('in_out/' + 'output', 'w+') as f:
+        with open('in_out/' + 'output.txt', 'w+') as f:
             for ind, x in enumerate(self.pb):
                 if x != 0:
                     l = '{}\t{}\n'.format((str(ind)), x)
