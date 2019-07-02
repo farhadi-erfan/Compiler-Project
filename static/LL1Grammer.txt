@@ -133,7 +133,7 @@ Factor -> ( Expression )
 Factor_2 -> ( Expression )
          |num #pnum.
 
-Fid_3 -> Fid
+Fid_3 -> Fid #calc_addr
         |( Args ) #func_jmp .
 
 Call -> id ( Args ) .
