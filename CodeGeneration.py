@@ -18,6 +18,7 @@ class CodeGenerator:
         self.current_arg = 0
         self.in_rhs = False
         self.semantic_errors = []
+        self.variables_to_be_declared_before_main = []
 
     def get_address_by_token(self, label):
         for symcell in self.symbol_table.stack:

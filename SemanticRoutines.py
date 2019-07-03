@@ -54,6 +54,13 @@ class SemanticRoutines:
                 SemanticRoutines.assign(cg, '#{}'.format(cg.data_index + 4), '{}'.format(cg.data_index))
                 cg.data_index += 4 * (int(arr_size) + 1)
                 cg.ss.pop(4)
+                if cg.scope_stack.top()[1] is None:
+                    seen_main = False
+                    for symcell in cg.symbol_table.stack:
+                        seen_main = (symcell['token'] == 'main' and symcell.get('is_func', False)) or seen_main
+                    if not seen_main:
+                        cg.variables_to_be_declared_before_main += [cg.index - 1]
+                        cg.index += 1
 
     @staticmethod
     def fundec(cg, token=None):
@@ -180,7 +187,7 @@ class SemanticRoutines:
         if addop == '+':
             SemanticRoutines.add(cg, val, dest, t2)
         elif addop == '-':
-            SemanticRoutines.sub(cg, val, dest, t2)
+            SemanticRoutines.sub(cg, dest, val, t2)
         cg.ss.push(t2)
 
     @staticmethod
@@ -357,6 +364,8 @@ class SemanticRoutines:
             if symcell['token'] == func and symcell.get('is_func', False):
                 if symcell['type'] == 'int':
                     raise Exception("Returning without value for int function: {}".format(func))
+                else:
+                    return
         raise Exception('could not find function')
 
     @staticmethod
@@ -428,12 +437,16 @@ class SemanticRoutines:
 
     @staticmethod
     def set_main(cg, token=None):
+        pos = 0
+        for ind in cg.variables_to_be_declared_before_main:
+            cg.pb[pos] = '(JP, {}, , )'.format(ind)
+            pos = ind + 1
         for symcell in cg.symbol_table.stack:
             if symcell['token'] == 'main' and symcell['type'] == 'void' and len(symcell['args']) == 0:
                 # cg.pb[0] = '(ASSIGN, {}, {}, )'.format(cg.index, symcell['jmp_position'])
                 # cg.pb[1] = '(JP, {}, , )'.format(symcell['addr'])
                 cg.pb[symcell['main']] = '(ASSIGN, #{}, {}, )'.format(cg.index, symcell['jmp_position'])
-                cg.pb[0] = '(JP, {}, , )'.format(symcell['addr'])
+                cg.pb[pos] = '(JP, {}, , )'.format(symcell['addr'])
                 return
         raise Exception('main function not found!')
 
