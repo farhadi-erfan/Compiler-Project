@@ -67,6 +67,7 @@ class CodeGenerator:
         for x in self.symbol_table.stack:
             if x['token'] == token:
                 return x
+        raise Exception("\'{}\' is not defined.".format(token))
 
     def output_pb(self):
         with open('in_out/' + 'output.txt', 'w+') as f:

@@ -17,7 +17,7 @@ FTS2 = ({'src': 0, 'dst': 1, 'condition': 'id', 'callback': None, 'name': 'FTS2'
 Fid4 = ({'src': 0, 'dst': 1, 'condition': None, 'callback': 'Fid1', 'Finish': True, 'name': 'Fid4'},
         {'src': 0, 'dst': 2, 'condition': '(', 'callback': None, 'post': 'fundec'},
         {'src': 2, 'dst': 3, 'condition': None, 'callback': 'Params'},
-        {'src': 3, 'dst': 4, 'condition': ')', 'callback': None},
+        {'src': 3, 'dst': 4, 'condition': ')', 'callback': None, 'post': 'pop_1'},
         {'src': 4, 'dst': 2, 'condition': None, 'callback': 'CompStmt', 'Finish': True, 'post': 'remove_scope'})
 
 Fid1 = ({'src': 0, 'dst': 1, 'condition': ';', 'callback': None, 'Finish': True, 'name': 'Fid1', 'post': 'plast'},
@@ -97,7 +97,8 @@ IterStmt = ({'src': 0, 'dst': 1, 'condition': 'while', 'callback': None, 'name':
 RetStmt = ({'src': 0, 'dst': 1, 'condition': 'return', 'callback': None, 'name': 'RetStmt'},
            {'src': 1, 'dst': 2, 'condition': None, 'callback': 'Fret', 'Finish': True, 'post': 'func_return'})
 
-Fret = ({'src': 0, 'dst': 2, 'condition': ';', 'callback': None, 'name': 'Fret', 'Finish': True},
+Fret = ({'src': 0, 'dst': 2, 'condition': ';', 'callback': None, 'name': 'Fret', 'Finish': True,
+         'post': 'void_ret'},
         {'src': 0, 'dst': 1, 'condition': None, 'callback': 'Expr', 'post': 'set_result'},
         {'src': 1, 'dst': 2, 'condition': ';', 'callback': 'None', 'Finish': True})
 
